@@ -4,7 +4,6 @@
 package com.chalwk.util;
 
 import com.chalwk.util.Enums.StatusField;
-import com.chalwk.util.Logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -13,23 +12,25 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.chalwk.util.Listeners.GuildReady.getGuild;
-import static java.time.LocalTime.now;
 
 public class StatusMonitor {
 
     private static final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private static final String messageIDFile = "message-ids.json";
     private static String serverID;
 
     public StatusMonitor(String serverName, int intervalInSeconds) {
-        serverID = serverName;
+        StatusMonitor.serverID = serverName;
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 10, intervalInSeconds * 1000L);
     }
@@ -37,7 +38,11 @@ public class StatusMonitor {
     private static EmbedBuilder createEmbedMessage(JSONObject data) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("Server Status");
-        embed.setFooter("Last updated: " + now(), null);
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy | HH:mm:ss");
+        String timestamp = now.format(formatter);
+        embed.setFooter("Last updated: " + timestamp, null);
 
         for (StatusField field : StatusField.values()) {
             embed.addField(field.getFieldName(), getFieldValue(data, field), false);
@@ -46,16 +51,17 @@ public class StatusMonitor {
         return embed;
     }
 
+
     private static String getFieldValue(JSONObject data, StatusField field) {
-        if (Objects.requireNonNull(field) == StatusField.PLAYER_LIST) {
-            JSONArray playerList = data.getJSONArray(field.getFieldName());
-            StringBuilder players = new StringBuilder();
-            for (int i = 0; i < playerList.length(); i++) {
-                players.append(playerList.getString(i)).append("\n");
+        if (field == StatusField.PLAYER_LIST) {
+            JSONArray playerList = data.optJSONArray(field.getFieldName());
+            if (playerList != null && !playerList.isEmpty()) {
+                return playerList.toList().stream().map(Object::toString).collect(Collectors.joining("\n"));
+            } else {
+                return "No players online";
             }
-            return players.toString();
         }
-        return data.getString(field.getFieldName());
+        return data.optString(field.getFieldName(), "N/A");
     }
 
     private static class StatusUpdaterTask extends TimerTask {
@@ -65,6 +71,7 @@ public class StatusMonitor {
 
             JSONObject parentTable;
             JSONObject serverTable;
+
             try {
                 parentTable = FileIO.getJSONObject("halo-events.json");
                 serverTable = parentTable.getJSONObject(serverID);
@@ -77,7 +84,9 @@ public class StatusMonitor {
 
             try {
                 String messageID = getMessageID();
-                if (messageID == null || !messageExists(channel, messageID)) {
+                if (messageID == null) {
+                    createInitialMessage(serverTable, channel);
+                } else if (!messageExists(channel, messageID)) {
                     createInitialMessage(serverTable, channel);
                 } else {
                     updateEmbed(serverTable, channel, messageID);
@@ -101,12 +110,12 @@ public class StatusMonitor {
                 String messageID = channel.getLatestMessageId();
                 JSONObject channelIDs;
                 try {
-                    channelIDs = FileIO.getJSONObject("message-ids.json");
+                    channelIDs = FileIO.getJSONObject(messageIDFile);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 channelIDs.put(serverID, messageID);
-                FileIO.saveJSONObjectToFile(channelIDs, "message-ids.json");
+                FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
             }, 1000, TimeUnit.MILLISECONDS);
         }
 
@@ -120,18 +129,21 @@ public class StatusMonitor {
             String channelID = serverTable.getJSONObject("status").getString("CHANNEL_ID");
             TextChannel channel = guild.getTextChannelById(channelID);
             if (channel == null) {
-                Logger.severe("Channel not found: " + channelID);
-                return null;
+                throw new IllegalArgumentException("Channel not found: " + channelID);
             }
             return channel;
         }
 
-        private String getMessageID() throws IOException {
-            JSONObject channelIDs = FileIO.getJSONObject("message-ids.json");
-            if (channelIDs.has(serverID) && !channelIDs.getString(serverID).isEmpty()) {
-                return channelIDs.getString(serverID);
-            } else {
-                return null;
+        private String getMessageID() {
+            JSONObject channelIDs = getChannelIds();
+            return channelIDs.has(serverID) && !channelIDs.getString(serverID).isEmpty() ? channelIDs.getString(serverID) : null;
+        }
+
+        private JSONObject getChannelIds() {
+            try {
+                return FileIO.getJSONObject(messageIDFile);
+            } catch (IOException e) {
+                throw new IllegalStateException("Error reading channel IDs: " + e.getMessage());
             }
         }
     }
