@@ -30,16 +30,14 @@ public class FileIO {
 
     public static void saveJSONObjectToFile(JSONObject jsonObject, String fileName) {
         try {
-            String jsonString = jsonObject.toString(4);
-            FileWriter fileWriter = new FileWriter(fileName);
-            fileWriter.write(jsonString);
+            File file = new File(FileIO.class.getClassLoader().getResource(fileName).getFile());
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(jsonObject.toString(4));
             fileWriter.flush();
-            fileWriter.close();
         } catch (IOException e) {
             Logger.info("Error saving JSONObject to file: " + e.getMessage());
         }
     }
-
 
     public static JSONArray getJSONArray(String fileName) throws IOException {
         String content = readFile(fileName);
