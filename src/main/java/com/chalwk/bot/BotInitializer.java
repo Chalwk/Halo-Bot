@@ -5,7 +5,6 @@ package com.chalwk.bot;
 
 import com.chalwk.CommandManager.CommandListener;
 import com.chalwk.commands.channel;
-import com.chalwk.util.EventProcessingTask;
 import com.chalwk.util.FileIO;
 import com.chalwk.util.Listeners.GuildReady;
 import com.chalwk.util.StatusMonitor;
@@ -75,7 +74,7 @@ public class BotInitializer {
 
             JSONObject serverTable = parentTable.getJSONObject(serverKey);
 
-            new EventProcessingTask(serverTable, 30, serverKey);
+            //new EventProcessingTask(serverTable, 30, serverKey);
             new StatusMonitor(serverTable, 30, serverKey);
         }
     }
