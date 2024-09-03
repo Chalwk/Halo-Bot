@@ -26,10 +26,13 @@ public class StatusMonitor {
 
     private static final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private static final String messageIDFile = "message-ids.json";
+    private static JSONObject serverTable;
     private static String serverID;
 
-    public StatusMonitor(String serverName, int intervalInSeconds) {
-        StatusMonitor.serverID = serverName;
+    public StatusMonitor(JSONObject serverTable, int intervalInSeconds, String serverID) {
+        StatusMonitor.serverTable = serverTable;
+        StatusMonitor.serverID = serverID;
+
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 10, intervalInSeconds * 1000L);
     }
@@ -50,7 +53,6 @@ public class StatusMonitor {
         return embed;
     }
 
-
     private static String getFieldValue(JSONObject data, StatusField field) {
         if (field == StatusField.PLAYER_LIST) {
             JSONArray playerList = data.optJSONArray(field.getFieldName());
@@ -63,84 +65,76 @@ public class StatusMonitor {
         return data.optString(field.getFieldName(), "N/A");
     }
 
+    private static void updateEmbed(TextChannel channel, String messageID) {
+        EmbedBuilder embed = createEmbedMessage(getStatusTable());
+        channel.retrieveMessageById(messageID)
+                .queue(message -> message.editMessageEmbeds(embed.build()).queue());
+    }
+
+    private static void createInitialMessage(TextChannel channel) throws IOException {
+        EmbedBuilder embed = createEmbedMessage(getStatusTable());
+        channel.sendMessageEmbeds(embed.build()).queue();
+
+        executorService.schedule(() -> {
+            String messageID = channel.getLatestMessageId();
+            JSONObject channelIDs;
+            try {
+                channelIDs = FileIO.getJSONObject(messageIDFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            channelIDs.put(serverID, messageID);
+            FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
+        }, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    private static boolean messageExists(TextChannel channel, String messageID) {
+        return channel.retrieveMessageById(messageID).complete() != null;
+    }
+
+    private static TextChannel getTextChannel() {
+        Guild guild = getGuild();
+        String channelID = getStatusTable().getString("CHANNEL_ID");
+        TextChannel channel = guild.getTextChannelById(channelID);
+        if (channel == null) {
+            throw new IllegalArgumentException("Channel not found: " + channelID);
+        }
+        return channel;
+    }
+
+    private static String getMessageID() {
+        JSONObject channelIDs = getChannelIds();
+        return channelIDs.has(serverID) && !channelIDs.getString(serverID).isEmpty() ? channelIDs.getString(serverID) : null;
+    }
+
+    private static JSONObject getChannelIds() {
+        try {
+            return FileIO.getJSONObject(messageIDFile);
+        } catch (IOException e) {
+            throw new IllegalStateException("Error reading channel IDs: " + e.getMessage());
+        }
+    }
+
+    private static JSONObject getStatusTable() {
+        return serverTable.getJSONObject("status");
+    }
+
     private static class StatusUpdaterTask extends TimerTask {
 
         @Override
         public void run() {
-
-            JSONObject parentTable;
-            JSONObject serverTable;
-
-            try {
-                parentTable = FileIO.getJSONObject("halo-events.json");
-                serverTable = parentTable.getJSONObject(serverID);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            TextChannel channel = getTextChannel(serverTable);
-
+            TextChannel channel = getTextChannel();
             try {
                 String messageID = getMessageID();
                 if (messageID == null) {
-                    createInitialMessage(serverTable, channel);
+                    createInitialMessage(channel);
                 } else if (!messageExists(channel, messageID)) {
-                    createInitialMessage(serverTable, channel);
+                    createInitialMessage(channel);
                 } else {
-                    updateEmbed(serverTable, channel, messageID);
+                    updateEmbed(channel, messageID);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-        }
-
-        private void updateEmbed(JSONObject serverTable, TextChannel channel, String messageID) {
-            EmbedBuilder embed = createEmbedMessage(serverTable.getJSONObject("status"));
-            channel.retrieveMessageById(messageID)
-                    .queue(message -> message.editMessageEmbeds(embed.build()).queue());
-        }
-
-        private void createInitialMessage(JSONObject serverTable, TextChannel channel) throws IOException {
-            EmbedBuilder embed = createEmbedMessage(serverTable.getJSONObject("status"));
-            channel.sendMessageEmbeds(embed.build()).queue();
-
-            executorService.schedule(() -> {
-                String messageID = channel.getLatestMessageId();
-                JSONObject channelIDs;
-                try {
-                    channelIDs = FileIO.getJSONObject(messageIDFile);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                channelIDs.put(serverID, messageID);
-                FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
-            }, 1000, TimeUnit.MILLISECONDS);
-        }
-
-        private boolean messageExists(TextChannel channel, String messageID) {
-            return channel.retrieveMessageById(messageID).complete() != null;
-        }
-
-        private TextChannel getTextChannel(JSONObject serverTable) {
-            Guild guild = getGuild();
-            String channelID = serverTable.getJSONObject("status").getString("CHANNEL_ID");
-            TextChannel channel = guild.getTextChannelById(channelID);
-            if (channel == null) {
-                throw new IllegalArgumentException("Channel not found: " + channelID);
-            }
-            return channel;
-        }
-
-        private String getMessageID() {
-            JSONObject channelIDs = getChannelIds();
-            return channelIDs.has(serverID) && !channelIDs.getString(serverID).isEmpty() ? channelIDs.getString(serverID) : null;
-        }
-
-        private JSONObject getChannelIds() {
-            try {
-                return FileIO.getJSONObject(messageIDFile);
-            } catch (IOException e) {
-                throw new IllegalStateException("Error reading channel IDs: " + e.getMessage());
             }
         }
     }

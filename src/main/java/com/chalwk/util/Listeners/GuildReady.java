@@ -12,7 +12,6 @@ public class GuildReady extends ListenerAdapter {
 
     private static Guild guild;
 
-    // getter:
     public static Guild getGuild() {
         return guild;
     }

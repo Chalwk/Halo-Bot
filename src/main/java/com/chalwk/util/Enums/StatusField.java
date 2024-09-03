@@ -10,7 +10,6 @@ public enum StatusField {
     MODE("MODE"),
     TOTAL_PLAYERS("TOTAL_PLAYERS"),
     PLAYER_LIST("PLAYER_LIST");
-    //CHANNEL_ID("CHANNEL_ID");
 
     private final String fieldName;
 
