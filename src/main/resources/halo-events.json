@@ -5,44 +5,17 @@
       "SERVER_NAME": "LNZ DEV SERVER",
       "MAP": "Bloodgulch",
       "MODE": "CTF",
-      "TOTAL_PLAYERS": "1",
+      "TOTAL_PLAYERS": "2",
       "PLAYER_LIST": [
         "Chalwk",
-        "Hitman",
-        "DangerDan",
-        "SilkySmooth",
-        "LoveGood"
+        "AussieGirl"
       ]
     },
     "sapp_events": [
       {
-        "title": "A new game has started!",
-        "description": "Server 1 is currently running Bloodgulch CTF with 5 players.",
+        "title": "\uD83C\uDF04 A new game has started!",
+        "description": "Map: [Bloodgulch] - [CTF] with no players.",
         "color": "GREEN",
-        "channel": "1280417571837055022"
-      },
-      {
-        "title": "The game has ended!",
-        "description": "Showing post game carnage report...",
-        "color": "RED",
-        "channel": "1280417571837055022"
-      },
-      {
-        "title": "Chalwk joined the game!",
-        "description": "",
-        "color": "GREEN",
-        "channel": "1280417571837055022"
-      },
-      {
-        "title": "Chalwk left the game!",
-        "description": "",
-        "color": "RED",
-        "channel": "1280417571837055022"
-      },
-      {
-        "title": "Chalwk: Hello, this is a test message",
-        "description": "Live chat message",
-        "color": "YELLOW",
         "channel": "1280417571837055022"
       }
     ]

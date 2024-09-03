@@ -72,11 +72,8 @@ public class BotInitializer {
     private void processHaloData() throws IOException {
         JSONObject parentTable = FileIO.getJSONObject("halo-events.json");
         for (String serverKey : parentTable.keySet()) {
-
-            JSONObject serverTable = parentTable.getJSONObject(serverKey);
-
-            new EventProcessingTask(serverTable, 30);
-            new StatusMonitor(serverTable, 30, serverKey);
+            new StatusMonitor(serverKey, 30);
+            new EventProcessingTask(serverKey, 15);
         }
     }
 

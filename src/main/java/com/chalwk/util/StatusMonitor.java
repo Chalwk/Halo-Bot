@@ -6,6 +6,7 @@ package com.chalwk.util;
 import com.chalwk.util.Enums.StatusField;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,12 +27,10 @@ public class StatusMonitor {
 
     private static final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private static final String messageIDFile = "message-ids.json";
-    private static JSONObject serverTable;
-    private static String serverID;
+    private static String serverKey;
 
-    public StatusMonitor(JSONObject serverTable, int intervalInSeconds, String serverID) {
-        StatusMonitor.serverTable = serverTable;
-        StatusMonitor.serverID = serverID;
+    public StatusMonitor(String serverKey, int intervalInSeconds) {
+        StatusMonitor.serverKey = serverKey;
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 10, intervalInSeconds * 1000L);
@@ -65,7 +64,7 @@ public class StatusMonitor {
         return data.optString(field.getFieldName(), "N/A");
     }
 
-    private static void updateEmbed(TextChannel channel, String messageID) {
+    private static void updateEmbed(TextChannel channel, String messageID) throws IOException {
         EmbedBuilder embed = createEmbedMessage(getStatusTable());
         channel.retrieveMessageById(messageID)
                 .queue(message -> message.editMessageEmbeds(embed.build()).queue());
@@ -73,17 +72,15 @@ public class StatusMonitor {
 
     private static void createInitialMessage(TextChannel channel) throws IOException {
         EmbedBuilder embed = createEmbedMessage(getStatusTable());
-        channel.sendMessageEmbeds(embed.build()).queue();
-
+        Message message = channel.sendMessageEmbeds(embed.build()).complete();
         executorService.schedule(() -> {
-            String messageID = channel.getLatestMessageId();
             JSONObject channelIDs;
             try {
                 channelIDs = FileIO.getJSONObject(messageIDFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            channelIDs.put(serverID, messageID);
+            channelIDs.put(serverKey, message.getId());
             FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
         }, 1000, TimeUnit.MILLISECONDS);
     }
@@ -92,7 +89,7 @@ public class StatusMonitor {
         return channel.retrieveMessageById(messageID).complete() != null;
     }
 
-    private static TextChannel getTextChannel() {
+    private static TextChannel getTextChannel() throws IOException {
         Guild guild = getGuild();
         String channelID = getStatusTable().getString("CHANNEL_ID");
         TextChannel channel = guild.getTextChannelById(channelID);
@@ -104,7 +101,7 @@ public class StatusMonitor {
 
     private static String getMessageID() {
         JSONObject channelIDs = getChannelIds();
-        return channelIDs.has(serverID) && !channelIDs.getString(serverID).isEmpty() ? channelIDs.getString(serverID) : null;
+        return channelIDs.has(serverKey) && !channelIDs.getString(serverKey).isEmpty() ? channelIDs.getString(serverKey) : null;
     }
 
     private static JSONObject getChannelIds() {
@@ -115,15 +112,21 @@ public class StatusMonitor {
         }
     }
 
-    private static JSONObject getStatusTable() {
-        return serverTable.getJSONObject("status");
+    private static JSONObject getStatusTable() throws IOException {
+        JSONObject parentTable = FileIO.getJSONObject("halo-events.json");
+        return parentTable.getJSONObject(serverKey).getJSONObject("status");
     }
 
     private static class StatusUpdaterTask extends TimerTask {
 
         @Override
         public void run() {
-            TextChannel channel = getTextChannel();
+            TextChannel channel;
+            try {
+                channel = getTextChannel();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             try {
                 String messageID = getMessageID();
                 if (messageID == null) {
