@@ -61,7 +61,7 @@ public class EventProcessingTask {
                 JSONObject parentTable = data.getParentTable();
 
                 for (int i = 0; i < eventTable.length(); i++) {
-                    getServerData result = getGetServerData(eventTable, i);
+                    EmbedData result = getGetServerData(eventTable, i);
                     sendMessage(result.title(), result.description(), result.color(), result.channelID());
                     eventTable.remove(i);
                 }
@@ -73,17 +73,17 @@ public class EventProcessingTask {
         }
 
         @NotNull
-        private getServerData getGetServerData(JSONArray eventTable, int tableIndex) {
+        private EmbedData getGetServerData(JSONArray eventTable, int tableIndex) {
             JSONObject event = eventTable.getJSONObject(tableIndex);
             String title = event.getString("title");
             String description = event.getString("description");
             String channelID = event.getString("channel");
             String color = event.getString("color");
-            return new getServerData(title, description, channelID, color);
+            return new EmbedData(title, description, channelID, color);
         }
+    }
 
-        private record getServerData(String title, String description, String channelID, String color) {
+    private record EmbedData(String title, String description, String channelID, String color) {
 
-        }
     }
 }

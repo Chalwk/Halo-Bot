@@ -33,7 +33,7 @@ public class StatusMonitor {
         StatusMonitor.serverKey = serverKey;
 
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 10, intervalInSeconds * 1000L);
+        timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 3, intervalInSeconds * 1000L);
     }
 
     private static EmbedBuilder createEmbedMessage(JSONObject data) {

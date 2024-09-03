@@ -5,11 +5,11 @@ package com.chalwk.util.Enums;
 
 public enum StatusField {
 
-    SERVER_NAME("SERVER_NAME"),
-    MAP("MAP"),
-    MODE("MODE"),
-    TOTAL_PLAYERS("TOTAL_PLAYERS"),
-    PLAYER_LIST("PLAYER_LIST");
+    SERVER_NAME("Server Name"),
+    MAP("Map"),
+    MODE("Mode"),
+    TOTAL_PLAYERS("Total Players"),
+    PLAYER_LIST("Player List");
 
     private final String fieldName;
 

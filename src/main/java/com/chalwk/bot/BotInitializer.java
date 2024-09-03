@@ -73,7 +73,7 @@ public class BotInitializer {
         JSONObject parentTable = FileIO.getJSONObject("halo-events.json");
         for (String serverKey : parentTable.keySet()) {
             new StatusMonitor(serverKey, 30);
-            new EventProcessingTask(serverKey, 15);
+            new EventProcessingTask(serverKey, 1);
         }
     }
 

@@ -2,11 +2,11 @@
   "server_1": {
     "status": {
       "CHANNEL_ID": "1280417571837055022",
-      "SERVER_NAME": "LNZ DEV SERVER",
-      "MAP": "Bloodgulch",
-      "MODE": "CTF",
-      "TOTAL_PLAYERS": "2",
-      "PLAYER_LIST": [
+      "Server Name": "LNZ DEV SERVER",
+      "Map": "Bloodgulch",
+      "Mode": "CTF",
+      "Total Players": "2",
+      "Player List": [
         "Chalwk",
         "AussieGirl"
       ]
