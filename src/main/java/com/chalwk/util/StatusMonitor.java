@@ -7,7 +7,6 @@ import com.chalwk.util.Enums.StatusField;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -80,7 +79,6 @@ public class StatusMonitor {
             }
 
             TextChannel channel = getTextChannel(serverTable);
-            if (channel == null) return;
 
             try {
                 String messageID = getMessageID();
@@ -123,7 +121,6 @@ public class StatusMonitor {
             return channel.retrieveMessageById(messageID).complete() != null;
         }
 
-        @Nullable
         private TextChannel getTextChannel(JSONObject serverTable) {
             Guild guild = getGuild();
             String channelID = serverTable.getJSONObject("status").getString("CHANNEL_ID");
