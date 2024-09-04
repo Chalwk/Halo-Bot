@@ -6,6 +6,7 @@ package com.chalwk.util.Enums;
 public enum StatusField {
 
     SERVER_NAME("Server Name"),
+    SERVER_IP("Server IP"),
     MAP("Map"),
     MODE("Mode"),
     TOTAL_PLAYERS("Total Players"),

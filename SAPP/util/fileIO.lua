@@ -1,25 +1,36 @@
 local fileIO = {}
+local path = "./Halo-Bot/halo-events.json"
 
-function fileIO:readFile(filePath)
-    local file, err = io.open(filePath, "r")
+function fileIO:getJSONData()
+    local file = io.open(path, "r")
     if file then
         local content = file:read("*all")
         file:close()
-        return content == "" and {} or content
-    else
-        return nil, err
+        return self.json:decode(content)
     end
 end
 
-function fileIO:writeFile(filePath, content)
-    local file, err = io.open(filePath, "w")
+function fileIO:setJSONData(content)
+    local file = io.open(path, "w")
     if file then
-        local jsonContent = self.json:encode_pretty(content)
-        file:write(jsonContent)
+        file:write(self.json:encode_pretty(content))
         file:close()
-    else
-        return nil, err
     end
+end
+
+function fileIO:getEventTable(event)
+    return self[self.server_id]["EVENT_SETTINGS"][event]
+end
+
+function fileIO:addSAPPEvent(parent_table, args)
+    local events = parent_table['sapp_events']
+    table.insert(events, {
+        title = args.title,
+        description = args.description,
+        color = args.color,
+        channel = args.channel
+    })
+    return events
 end
 
 return fileIO
