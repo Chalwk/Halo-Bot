@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,7 +24,7 @@ public class EventProcessingTask {
     public EventProcessingTask(String serverKey, int intervalInSeconds) {
         EventProcessingTask.serverKey = serverKey;
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new EventProcessingTask.Task(), 1000 * 10, intervalInSeconds * 1000L);
+        timer.scheduleAtFixedRate(new EventProcessingTask.Task(), 1000 * 5, intervalInSeconds * 1000L);
     }
 
     private static JsonData getEventTable() throws IOException {
@@ -47,14 +46,17 @@ public class EventProcessingTask {
         TextChannel channel = getTextChannel(channelID);
         channel.sendMessageEmbeds(new EmbedBuilder()
                 .setTitle(title)
-                .setDescription(description)
-                .setColor(Color.getColor(colorName)).build()).queue();
+                .setDescription(description).build()).queue();
+        //.setColor(Color.getColor(colorName)).build()).queue();
     }
 
     private static class Task extends TimerTask {
 
         @Override
         public void run() {
+
+            System.out.println("Checking for events...");
+
             try {
                 JsonData data = getEventTable();
                 JSONArray eventTable = data.getEventTable();

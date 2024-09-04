@@ -5,8 +5,10 @@ package com.chalwk.bot;
 
 import com.chalwk.CommandManager.CommandListener;
 import com.chalwk.commands.channel;
+import com.chalwk.util.EventProcessingTask;
 import com.chalwk.util.FileIO;
 import com.chalwk.util.Listeners.GuildReady;
+import com.chalwk.util.StatusMonitor;
 import com.chalwk.util.authentication;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -69,10 +71,10 @@ public class BotInitializer {
 
     private void processHaloData() throws IOException {
         JSONObject parentTable = FileIO.getJSONObject("halo-events.json");
-//        for (String serverKey : parentTable.keySet()) {
-//            new StatusMonitor(serverKey, 30);
-//            new EventProcessingTask(serverKey, 1);
-//        }
+        for (String serverKey : parentTable.keySet()) {
+            new StatusMonitor(serverKey, 30);
+            new EventProcessingTask(serverKey, 1);
+        }
     }
 
     /**
