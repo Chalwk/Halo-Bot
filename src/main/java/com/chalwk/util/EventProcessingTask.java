@@ -54,9 +54,6 @@ public class EventProcessingTask {
 
         @Override
         public void run() {
-
-            System.out.println("Checking for events...");
-
             try {
                 JsonData data = getEventTable();
                 JSONArray eventTable = data.getEventTable();
