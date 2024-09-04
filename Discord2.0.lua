@@ -12,7 +12,6 @@ All event notifications are sent as customizable embed messages, allowing users 
 Events:
 
   EVENT:                    TRIGGERED WHEN:
-
 - event_chat                A player sends a chat message
 - event_command             A player executes a command
 - event_game_start          A new game starts
