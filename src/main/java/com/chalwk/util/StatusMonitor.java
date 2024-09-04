@@ -77,7 +77,7 @@ public class StatusMonitor {
         executorService.schedule(() -> {
             JSONObject channelIDs;
             try {
-                channelIDs = FileIO.getJSONObject(messageIDFile);
+                channelIDs = FileIO.getJSONObjectFromFile(messageIDFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -107,14 +107,14 @@ public class StatusMonitor {
 
     private static JSONObject getChannelIds() {
         try {
-            return FileIO.getJSONObject(messageIDFile);
+            return FileIO.getJSONObjectFromFile(messageIDFile);
         } catch (IOException e) {
             throw new IllegalStateException("Error reading channel IDs: " + e.getMessage());
         }
     }
 
     private static JSONObject getStatusTable() throws IOException {
-        JSONObject parentTable = FileIO.getJSONObject("halo-events.json");
+        JSONObject parentTable = FileIO.getJSONObjectFromFile("halo-events.json");
         return parentTable.getJSONObject(serverKey).getJSONObject("status");
     }
 

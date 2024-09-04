@@ -9,15 +9,13 @@ import org.json.JSONObject;
 public class JsonData {
 
     private final JSONObject parentTable;
-    private final JSONArray eventTable;
 
-    public JsonData(JSONObject parentTable, JSONArray eventTable) {
-        this.eventTable = eventTable;
+    public JsonData(JSONObject parentTable) {
         this.parentTable = parentTable;
     }
 
-    public JSONArray getEventTable() {
-        return eventTable;
+    public JSONArray getEventTable(String serverKey) {
+        return parentTable.getJSONObject(serverKey).getJSONArray("sapp_events");
     }
 
     public JSONObject getParentTable() {

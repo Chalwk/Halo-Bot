@@ -57,7 +57,7 @@ public class FileIO {
         }
     }
 
-    public static JSONObject getJSONObject(String fileName) throws IOException {
+    public static JSONObject getJSONObjectFromFile(String fileName) throws IOException {
         String content = readFile(fileName);
         if (content.isEmpty()) {
             return new JSONObject();

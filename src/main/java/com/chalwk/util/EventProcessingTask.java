@@ -29,9 +29,8 @@ public class EventProcessingTask {
     }
 
     private static JsonData getEventTable() throws IOException {
-        JSONObject parentTable = FileIO.getJSONObject(HALO_EVENTS_FILE);
-        JSONArray eventTable = parentTable.getJSONObject(serverKey).getJSONArray("sapp_events");
-        return new JsonData(parentTable, eventTable);
+        JSONObject parentTable = FileIO.getJSONObjectFromFile(HALO_EVENTS_FILE);
+        return new JsonData(parentTable);
     }
 
     private static TextChannel getTextChannel(String channelID) {
@@ -57,8 +56,8 @@ public class EventProcessingTask {
         public void run() {
             try {
                 JsonData data = getEventTable();
-                JSONArray eventTable = data.getEventTable();
                 JSONObject parentTable = data.getParentTable();
+                JSONArray eventTable = data.getEventTable(serverKey);
 
                 for (int i = 0; i < eventTable.length(); i++) {
                     EmbedData result = getGetServerData(eventTable, i);
