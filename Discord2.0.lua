@@ -278,7 +278,7 @@ api_version = '1.12.0.0'
 -- Configuration ends here -----------------------------------------------------------------------
 -- Do not edit below this line
 
-local jsonData, players = {}, {}
+local serverData, players = {}, {}
 
 local date = os.date
 local json = loadfile('./Halo-Bot/json.lua')()
@@ -295,10 +295,10 @@ local function getJSONData()
     return nil
 end
 
-local function updateJSONData()
+local function updateJSONData(t)
     local file = io.open(config.path, "w")
     if file then
-        file:write(json:encode_pretty(jsonData))
+        file:write(json:encode_pretty(t))
         file:close()
     end
 end
@@ -325,9 +325,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
 
     local status = config.STATUS_SETTINGS
-
-    jsonData = getJSONData() or {}
-    jsonData[config.serverID] = {
+    serverData = {
         sapp_events = {},
         status = {
             ["CHANNEL_ID"] = status["channelID"],
@@ -340,9 +338,16 @@ function OnScriptLoad()
         }
     }
 
-    updateJSONData()
+    local jsonData = getJSONData() or {}
+    jsonData[config.serverID] = serverData
+    updateJSONData(jsonData)
 
     OnStart(true)
+end
+
+local function getTotalPlayers(isQuit)
+    local total = tonumber(get_var(0, "$pn"))
+    return (isQuit and total - 1 or total)
 end
 
 local function parseMessageTemplate(String, args)
@@ -387,24 +392,20 @@ local function notify(eventName, args)
     local message = parseMessageTemplate(embedDescription, args)
     embedTitle = parseMessageTemplate(embedTitle, args)
 
-    table.insert(jsonData[config.serverID].sapp_events, {
+    local jsonData = getJSONData()
+    table.insert(serverData.sapp_events, {
         title = embedTitle,
         description = message,
         color = embedColor,
         channel = embedChannel
     })
-
-    updateJSONData()
+    jsonData[config.serverID] = serverData
+    updateJSONData(jsonData)
 end
 
 local function getTag(Type, Name)
     local Tag = lookup_tag(Type, Name)
     return Tag ~= 0 and read_dword(Tag + 0xC) or nil
-end
-
-local function getTotalPlayers(isQuit)
-    local total = tonumber(get_var(0, "$pn"))
-    return (isQuit and total - 1 or total)
 end
 
 function OnStart(OnScriptLoad)
@@ -435,10 +436,10 @@ function OnStart(OnScriptLoad)
         end
     end
 
-    jsonData[config.serverID].status["Map"] = map
-    jsonData[config.serverID].status["Mode"] = mode
-    jsonData[config.serverID].status["Total Players"] = getTotalPlayers()
-    jsonData[config.serverID].status["Player List"] = playerList
+    serverData.status["Map"] = map
+    serverData.status["Mode"] = mode
+    serverData.status["Total Players"] = getTotalPlayers()
+    serverData.status["Player List"] = playerList
 
     notify("OnStart", {
         ["$totalPlayers"] = getTotalPlayers(),
@@ -449,6 +450,10 @@ function OnStart(OnScriptLoad)
 end
 
 function OnEnd()
+
+    serverData.status["Map"] = "Loading new Map..."
+    serverData.status["Mode"] = "N/A"
+
     notify("OnEnd", {
         ["$totalPlayers"] = getTotalPlayers(),
         ["$map"] = map,
@@ -458,7 +463,6 @@ function OnEnd()
 end
 
 local function getJoinQuit(player, isQuit)
-
     local level = tonumber(get_var(player.id, '$lvl'))
     local timeStamp = date(config.timeStampFormat)
     local ping = get_var(player.id, "$ping")
@@ -494,6 +498,7 @@ end
 function OnJoin(id, OnScriptLoad)
     local player = players[id]
     if (player and not OnScriptLoad) then
+        serverData.status["Total Players"] = getTotalPlayers()
         notify("OnJoin", getJoinQuit(player))
     end
 end
@@ -512,6 +517,7 @@ end
 function OnQuit(id)
     local player = players[id]
     if (player) then
+        serverData.status["Total Players"] = getTotalPlayers()
         notify("OnQuit", getJoinQuit(player, true))
     end
     players[id] = nil
