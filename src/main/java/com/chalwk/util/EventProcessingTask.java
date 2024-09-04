@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,8 +47,8 @@ public class EventProcessingTask {
         TextChannel channel = getTextChannel(channelID);
         channel.sendMessageEmbeds(new EmbedBuilder()
                 .setTitle(title)
-                .setDescription(description).build()).queue();
-        //.setColor(Color.getColor(colorName)).build()).queue();
+                .setDescription(description)
+                .setColor(Color.getColor(colorName)).build()).queue();
     }
 
     private static class Task extends TimerTask {

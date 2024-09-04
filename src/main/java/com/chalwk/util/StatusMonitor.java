@@ -44,6 +44,7 @@ public class StatusMonitor {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy | HH:mm:ss");
         String timestamp = now.format(formatter);
         embed.setFooter("Last updated: " + timestamp, null);
+        embed.setColor(0x00FF00);
 
         for (StatusField field : StatusField.values()) {
             embed.addField(field.getFieldName(), getFieldValue(data, field), false);
