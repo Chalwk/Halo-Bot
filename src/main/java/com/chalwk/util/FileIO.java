@@ -4,47 +4,56 @@
 package com.chalwk.util;
 
 import com.chalwk.util.Logging.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
 
 public class FileIO {
 
-    public static String readFile(String fileName) {
+    static String programPath = getProgramPath();
+
+    private static String getProgramPath() {
+        String currentDirectory = System.getProperty("user.dir");
+        currentDirectory = currentDirectory.replace("\\", "/");
+        return currentDirectory + "/Halo-Bot/";
+    }
+
+    private static void checkExists(File file) throws IOException {
+        boolean exists = file.exists();
+        if (!exists) {
+            boolean created = file.createNewFile();
+            if (!created) {
+                throw new IOException("Failed to create file: " + file.getAbsolutePath());
+            }
+        }
+    }
+
+    public static String readFile(String fileName) throws IOException {
+
+        File file = new File(programPath + fileName);
+        checkExists(file);
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line = reader.readLine();
 
         StringBuilder content = new StringBuilder();
-        InputStream inputStream = FileIO.class.getClassLoader().getResourceAsStream(fileName);
-
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line);
-            }
-        } catch (IOException e) {
-            Logger.info("Error reading file: " + e.getMessage());
+        while (line != null) {
+            content.append(line);
+            line = reader.readLine();
         }
+        reader.close();
 
         return content.toString();
     }
 
     public static void saveJSONObjectToFile(JSONObject jsonObject, String fileName) {
         try {
-            File file = new File(FileIO.class.getClassLoader().getResource(fileName).getFile());
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(jsonObject.toString(4));
-            fileWriter.flush();
+            FileWriter file = new FileWriter(programPath + fileName);
+            file.write(jsonObject.toString(4));
+            file.flush();
+            file.close();
         } catch (IOException e) {
             Logger.info("Error saving JSONObject to file: " + e.getMessage());
-        }
-    }
-
-    public static JSONArray getJSONArray(String fileName) throws IOException {
-        String content = readFile(fileName);
-        if (content.isEmpty()) {
-            return new JSONArray();
-        } else {
-            return new JSONArray(content);
         }
     }
 

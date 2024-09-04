@@ -33,7 +33,7 @@ local config = {
     --
 
     -- The server ID (unique identifier)
-    -- This is used to store data for multiple servers in a single JSON file
+    -- This is used to store data for multiple servers in a single JSON file.
     -- Make sure to change this value (ane keep them unique) if you are running multiple servers.
     serverID = "server_1",
 
@@ -44,7 +44,10 @@ local config = {
     timeStampFormat = "%A %d %B %Y - %X",
 
     -- Path to the JSON Data file that will store all the events to be processed by the Discord Bot.
-    path = "./Halo-Bot/halo-events.json",
+    jsonEventsPath = "./Halo-Bot/halo-events.json",
+
+    -- Path to the JSON library file
+    jsonLibraryPath = "./Halo-Bot/json.lua",
 
     -- Status settings
     STATUS_SETTINGS = {
@@ -60,7 +63,7 @@ local config = {
     -- End of general settings --
     --------------------------------
 
-    -- Event-specific settings
+    -- Event-specific settings:
     events = {
         ["OnStart"] = {
             -- Available placeholders: $map, $mode, $totalPlayers, $faa
@@ -81,7 +84,7 @@ local config = {
         ["OnPreJoin"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers
             enabled = true,
-            title = "Player attempting to connect to the server...",
+            title = "🌐 Player attempting to connect to the server...",
             description = "Player: $playerName",
             color = "GREEN",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -89,7 +92,7 @@ local config = {
         ["OnJoin"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers
             enabled = true,
-            title = "Player has joined the server!",
+            title = "🟢 Player has joined the server!",
             description = "Player: $playerName",
             color = "GREEN",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -98,7 +101,7 @@ local config = {
         ["OnQuit"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers
             enabled = true,
-            title = "Player has left the server!",
+            title = "🔴 Player has left the server!",
             description = "Player: $playerName",
             color = "RED",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -106,7 +109,7 @@ local config = {
         ["OnSpawn"] = {
             -- Available placeholders: $playerName
             enabled = true,
-            title = "Player has spawned!",
+            title = "🐣 Player has spawned!",
             description = "Player: $playerName",
             color = "YELLOW",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -115,7 +118,7 @@ local config = {
         ["OnSwitch"] = {
             -- Available placeholders: $playerName, $team
             enabled = true,
-            title = "Player has switched teams!",
+            title = "👥 Player has switched teams!",
             description = "Player: $playerName switched teams. New team: [$team]",
             color = "YELLOW",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -124,7 +127,7 @@ local config = {
         ["OnWarp"] = {
             -- Available placeholders: $playerName
             enabled = true,
-            title = "Player is warping...",
+            title = "𒅒 Player is warping...",
             description = "Player: $playerName",
             color = "YELLOW",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -132,7 +135,7 @@ local config = {
         ["OnReset"] = {
             -- Available placeholders: $map, $mode
             enabled = true,
-            title = "The map has been reset!",
+            title = "🔄 The map has been reset!",
             description = "Map: [$map / $mode]",
             color = "YELLOW",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -140,7 +143,7 @@ local config = {
         ["OnLogin"] = {
             -- Available placeholders: $playerName
             enabled = true,
-            title = "Player has logged in!",
+            title = "👤 Player has logged in!",
             description = "Player: $playerName",
             color = "YELLOW",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -148,7 +151,7 @@ local config = {
         ["OnSnap"] = {
             -- Available placeholders: $playerName
             enabled = true,
-            title = "Player has snapped!",
+            title = "⊹ Player has snapped!",
             description = "Player: $playerName",
             color = "YELLOW",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -156,7 +159,7 @@ local config = {
         ["OnCommand"] = {
             -- Available placeholders: $type, $name, $id, $cmd
             enabled = true,
-            title = "Command executed!",
+            title = "⌘ Command executed!",
             description = "[$type] $name ($id): $cmd",
             color = "RED",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -164,7 +167,7 @@ local config = {
         ["OnChat"] = {
             -- Available placeholders: $type, $name, $id, $msg
             enabled = true,
-            title = "Chat message sent!",
+            title = "🗨️ Chat message sent!",
             description = "[$type] $name ($id): $msg",
             color = "BLUE",
             channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -281,12 +284,12 @@ api_version = '1.12.0.0'
 local serverData, players = {}, {}
 
 local date = os.date
-local json = loadfile('./Halo-Bot/json.lua')()
+local json = loadfile(config.jsonLibraryPath)()
 
 local ffa, falling, distance, first_blood, map, mode
 
 local function getJSONData()
-    local file = io.open(config.path, "r")
+    local file = io.open(config.jsonEventsPath, "r")
     if file then
         local content = file:read("*all")
         file:close()
@@ -296,7 +299,7 @@ local function getJSONData()
 end
 
 local function updateJSONData(t)
-    local file = io.open(config.path, "w")
+    local file = io.open(config.jsonEventsPath, "w")
     if file then
         file:write(json:encode_pretty(t))
         file:close()

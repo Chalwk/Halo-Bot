@@ -20,7 +20,8 @@ public class authentication {
      * @throws IOException if an error occurs while reading the file.
      */
     public static String getToken() throws IOException {
-        try (BufferedReader text = new BufferedReader(new FileReader("auth.token"))) {
+        FileReader fileReader = new FileReader("./Halo-Bot/auth.token");
+        try (BufferedReader text = new BufferedReader(fileReader)) {
             return text.readLine();
         }
     }
