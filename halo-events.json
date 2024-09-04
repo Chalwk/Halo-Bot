@@ -2,9 +2,9 @@
   "server_1": {
     "sapp_events": [
       {
-        "channel": "1280417571837055022",
+        "channel": "xxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "color": "GREEN",
-        "description": "Map: [bloodgulch] - [CTF] with 0 players.",
+        "description": "Map: [bloodgulch] - [CTF] - (Team Play) | Players: 0",
         "title": "🌄 A new game has started!"
       }
     ],
@@ -14,7 +14,7 @@
       "Mode": "CTF",
       "Player List": [],
       "Server IP": "127.0.0.1:2310",
-      "Server Name": "LNZ DEV SERVER",
+      "Server Name": "TEST WAS SUCCESSFUL",
       "Total Players": 0
     }
   }

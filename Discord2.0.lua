@@ -278,14 +278,12 @@ api_version = '1.12.0.0'
 -- Configuration ends here -----------------------------------------------------------------------
 -- Do not edit below this line
 
-local jsonData = {}
-local players = {}
-local date = os.date
-local char = string.char
-local concat = table.concat
-local json = loadfile('./Halo-Bot/SAPP/libraries/json.lua')()
+local jsonData, players = {}, {}
 
-local map, mode
+local date = os.date
+local json = loadfile('./Halo-Bot/json.lua')()
+
+local ffa, falling, distance, first_blood, map, mode
 
 local function getJSONData()
     local file = io.open(config.path, "r")
@@ -294,6 +292,7 @@ local function getJSONData()
         file:close()
         return json:decode(content)
     end
+    return nil
 end
 
 local function updateJSONData()
@@ -303,8 +302,6 @@ local function updateJSONData()
         file:close()
     end
 end
-
-local ffa, falling, distance, first_blood
 
 function OnScriptLoad()
 
@@ -327,13 +324,15 @@ function OnScriptLoad()
     register_callback(cb['EVENT_MAP_RESET'], "OnReset")
     register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
 
+    local status = config.STATUS_SETTINGS
+
     jsonData = getJSONData() or {}
     jsonData[config.serverID] = {
         sapp_events = {},
         status = {
-            ["CHANNEL_ID"] = config.STATUS_SETTINGS["channelID"],
-            ["Server Name"] = config.STATUS_SETTINGS["serverName"],
-            ["Server IP"] = config.STATUS_SETTINGS["serverIP"],
+            ["CHANNEL_ID"] = status["channelID"],
+            ["Server Name"] = status["serverName"],
+            ["Server IP"] = status["serverIP"],
             ["Map"] = "N/A",
             ["Mode"] = "N/A",
             ["Total Players"] = "N/A",
@@ -343,16 +342,14 @@ function OnScriptLoad()
 
     updateJSONData()
 
-    OnStart()
+    OnStart(true)
 end
 
-local function parseMessageTemplate(messageTemplate, args)
-    local message = messageTemplate
-
+local function parseMessageTemplate(String, args)
+    local message = String
     for placeholder, value in pairs(args) do
         message = message:gsub(placeholder, value)
     end
-
     return message
 end
 
@@ -363,23 +360,41 @@ local function notify(eventName, args)
         return
     end
 
-    local embedMessage
+    local title = eventConfig.title
+    local description = eventConfig.description
+    local color = eventConfig.color or config.defaultColor
+    local channel = eventConfig.channel
+
+    local embedTitle, embedDescription, embedColor, embedChannel
     if eventName == "OnDeath" then
         local deathEvent = config.events["OnDeath"][args.eventType]
         if deathEvent and deathEvent.enabled then
-            eventConfig = deathEvent
-            embedMessage = eventConfig.message
+            embedTitle = deathEvent.title
+            embedDescription = deathEvent.description
+            embedColor = deathEvent.color or config.defaultColor
+            embedChannel = deathEvent.channel
             goto next
         end
     end
-    embedMessage = eventConfig.message
+
+    embedTitle = title
+    embedDescription = description
+    embedColor = color
+    embedChannel = channel
 
     :: next ::
 
-    local message = parseMessageTemplate(embedMessage, args)
-    local color = eventConfig.color or config.defaultColor
+    local message = parseMessageTemplate(embedDescription, args)
+    embedTitle = parseMessageTemplate(embedTitle, args)
 
+    table.insert(jsonData[config.serverID].sapp_events, {
+        title = embedTitle,
+        description = message,
+        color = embedColor,
+        channel = embedChannel
+    })
 
+    updateJSONData()
 end
 
 local function getTag(Type, Name)
@@ -387,56 +402,50 @@ local function getTag(Type, Name)
     return Tag ~= 0 and read_dword(Tag + 0xC) or nil
 end
 
-local function readWideString(Address, Length)
-    local count = 0
-    local byte_table = {}
-    for i = 1, Length do
-        if (read_byte(Address + count) ~= 0) then
-            byte_table[i] = char(read_byte(Address + count))
-        end
-        count = count + 2
-    end
-    return concat(byte_table)
-end
-
-local function getServerName()
-    local network_struct = read_dword(sig_scan("F3ABA1????????BA????????C740??????????E8????????668B0D") + 3)
-    return readWideString(network_struct + 0x8, 0x42)
-end
-
 local function getTotalPlayers(isQuit)
     local total = tonumber(get_var(0, "$pn"))
     return (isQuit and total - 1 or total)
 end
 
-function OnStart()
+function OnStart(OnScriptLoad)
 
-    if (get_var(0, "$gt") ~= "n/a") then
+    if get_var(0, '$gt') == 'n/a' then
+        return
+    end
 
-        players = { }
-        first_blood = true
+    players = { }
+    first_blood = true
 
-        ffa = (get_var(0, '$ffa') == '1')
+    ffa = (get_var(0, '$ffa') == '1')
 
-        falling = getTag('jpt!', 'globals\\falling')
-        distance = getTag('jpt!', 'globals\\distance')
+    falling = getTag('jpt!', 'globals\\falling')
+    distance = getTag('jpt!', 'globals\\distance')
 
-        map = get_var(0, "$map")
-        mode = get_var(0, "$mode")
+    map = get_var(0, "$map")
+    mode = get_var(0, "$mode")
 
-        notify("OnStart", {
-            ["$totalPlayers"] = getTotalPlayers(),
-            ["$map"] = map,
-            ["$mode"] = mode,
-            ["$faa"] = (ffa and "FFA" or "Team Play")
-        })
-
-        for i = 1, 16 do
-            if player_present(i) then
-                OnJoin(i)
+    local playerList = {}
+    for i = 1, 16 do
+        if player_present(i) then
+            OnJoin(i, OnScriptLoad)
+            local player = players[i]
+            if player then
+                table.insert(playerList, player.name)
             end
         end
     end
+
+    jsonData[config.serverID].status["Map"] = map
+    jsonData[config.serverID].status["Mode"] = mode
+    jsonData[config.serverID].status["Total Players"] = getTotalPlayers()
+    jsonData[config.serverID].status["Player List"] = playerList
+
+    notify("OnStart", {
+        ["$totalPlayers"] = getTotalPlayers(),
+        ["$map"] = map,
+        ["$mode"] = mode,
+        ["$faa"] = (ffa and "FFA" or "Team Play")
+    })
 end
 
 function OnEnd()
@@ -482,9 +491,9 @@ function OnPreJoin(id)
     end
 end
 
-function OnJoin(id)
+function OnJoin(id, OnScriptLoad)
     local player = players[id]
-    if (player) then
+    if (player and not OnScriptLoad) then
         notify("OnJoin", getJoinQuit(player))
     end
 end
