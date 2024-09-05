@@ -11,6 +11,13 @@ import org.jetbrains.annotations.NotNull;
 public class GuildReady extends ListenerAdapter {
 
     private static Guild guild;
+    private static final String logo = """
+            '||'  '||'     |     '||'       ..|''||           ..|'''.| '||''''|
+             ||    ||     |||     ||       .|'    ||        .|'     '   ||  .
+             ||''''||    |  ||    ||       ||      ||       ||          ||''|
+             ||    ||   .''''|.   ||       '|.     ||       '|.      .  ||
+            .||.  .||. .|.  .||. .||.....|  ''|...|'         ''|....'  .||.....|
+            """;
 
     public static Guild getGuild() {
         return guild;
@@ -18,6 +25,8 @@ public class GuildReady extends ListenerAdapter {
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
+        System.out.println("Guild ready: " + event.getGuild().getName());
+        System.out.println(logo);
         guild = event.getGuild();
     }
 }

@@ -82,14 +82,6 @@ local config = {
             color = "RED",
             channel = "1280825450901405757"
         },
-        ["OnPreJoin"] = {
-            -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers
-            enabled = false,
-            title = "🌐 Player attempting to connect to the server...",
-            description = "Player: $playerName",
-            color = "GREEN",
-            channel = "1280825450901405757"
-        },
         ["OnJoin"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers
             enabled = true,
@@ -325,7 +317,6 @@ function OnScriptLoad()
 
     register_callback(cb['EVENT_JOIN'], 'OnJoin')
     register_callback(cb['EVENT_LEAVE'], 'OnQuit')
-    register_callback(cb['EVENT_PREJOIN'], 'OnPreJoin')
 
     register_callback(cb['EVENT_GAME_END'], 'OnEnd')
     register_callback(cb['EVENT_GAME_START'], 'OnStart')
@@ -458,6 +449,21 @@ local function getTag(Type, Name)
     return Tag ~= 0 and read_dword(Tag + 0xC) or nil
 end
 
+--- Retrieves a list of players currently on the server.
+-- @return Table A table containing the names of all players on the server
+local function getPlayerList(excludeThisPlayer)
+    local playerList = {}
+    for i = 1, 16 do
+        if player_present(i) then
+            local player = players[i]
+            if player and i ~= excludeThisPlayer then
+                table.insert(playerList, player.name)
+            end
+        end
+    end
+    return playerList
+end
+
 --- Called when a new game starts, initializes various variables, adds players to a list, and sends an "OnStart" event notification.
 -- @param OnScriptLoad Boolean Indicates whether the script is being loaded for the first time
 -- @return nil
@@ -482,29 +488,24 @@ function OnStart(OnScriptLoad)
     map = get_var(0, "$map")
     mode = get_var(0, "$mode")
 
-    -- Create an empty player list
-    local playerList = {}
-
     -- Loop through player slots, add joined players to the list, and call OnJoin function
     for i = 1, 16 do
         if player_present(i) then
             OnJoin(i, OnScriptLoad)
-            local player = players[i]
-            if player then
-                table.insert(playerList, player.name)
-            end
         end
     end
+
+    local totalPlayers = getTotalPlayers()
 
     -- Update serverData with status information
     serverData.status["Map"] = map
     serverData.status["Mode"] = mode
-    serverData.status["Total Players"] = getTotalPlayers()
-    serverData.status["Player List"] = playerList
+    serverData.status["Total Players"] = totalPlayers
+    serverData.status["Player List"] = getPlayerList()
 
     -- Send an "OnStart" event notification with relevant game information
     notify("OnStart", {
-        ["$totalPlayers"] = getTotalPlayers(),
+        ["$totalPlayers"] = totalPlayers,
         ["$map"] = map,
         ["$mode"] = mode,
         ["$faa"] = (ffa and "FFA" or "Team Play")
@@ -534,10 +535,15 @@ end
 -- @return Table A table containing various player details
 local function getJoinQuit(player, isQuit)
 
-    -- Retrieve player's level, timestamp, and ping
-    local level = tonumber(get_var(player.id, '$lvl'))
-    local timeStamp = date(config.timeStampFormat)
     local ping = get_var(player.id, "$ping")
+    local timeStamp = date(config.timeStampFormat)
+    local level = tonumber(get_var(player.id, '$lvl'))
+
+    player.level = level -- update their level in case it was changed during the game
+
+    local totalPlayers = getTotalPlayers(isQuit)
+    serverData.status["Total Players"] = totalPlayers
+    serverData.status["Player List"] = getPlayerList(player.id) -- exclude the player who quit (if it's a quit event)
 
     -- Return a table containing player information
     return {
@@ -545,21 +551,21 @@ local function getJoinQuit(player, isQuit)
         ["$ipAddress"] = player.ip,
         ["$cdHash"] = player.hash,
         ["$indexID"] = player.id,
-        ["$privilegeLevel"] = level,
+        ["$privilegeLevel"] = player.level,
         ["$joinTime"] = timeStamp,
         ["$ping"] = ping,
-        ["$totalPlayers"] = getTotalPlayers(isQuit)
+        ["$totalPlayers"] = totalPlayers
     }
 end
 
---- Called before a player joins the game, initializes player data, and sends an "OnPreJoin" event notification.
+--- Called when a player joins the game, updates the total players count, and sends an "OnJoin" event notification.
 -- @param id number The player's index ID
+-- @param OnScriptLoad Boolean Indicates whether the script is being loaded for the first time
 -- @return nil
-function OnPreJoin(id)
+function OnJoin(id, OnScriptLoad)
 
-    -- Initialize player data
+    -- Initialize player object for this player
     players[id] = {
-        level = tonumber(get_var(id, '$lvl')),
         id = id,
         meta = 0,
         switched = false,
@@ -569,26 +575,11 @@ function OnPreJoin(id)
         hash = get_var(id, '$hash')
     }
 
-    local player = players[id]
-    if (player) then
-
-        -- Send an "OnPreJoin" event notification
-        notify("OnPreJoin", getJoinQuit(player))
-    end
-end
-
---- Called when a player joins the game, updates the total players count, and sends an "OnJoin" event notification.
--- @param id number The player's index ID
--- @param OnScriptLoad Boolean Indicates whether the script is being loaded for the first time
--- @return nil
-function OnJoin(id, OnScriptLoad)
-
     -- Retrieve the player object and check if it's not the script's first load
     local player = players[id]
     if (player and not OnScriptLoad) then
 
         -- Update the total players count and send an "OnJoin" event notification
-        serverData.status["Total Players"] = getTotalPlayers()
         notify("OnJoin", getJoinQuit(player))
     end
 end
@@ -621,7 +612,6 @@ function OnQuit(id)
     if (player) then
 
         -- Update the total players count and send an "OnQuit" event notification
-        serverData.status["Total Players"] = getTotalPlayers()
         notify("OnQuit", getJoinQuit(player, true))
     end
 

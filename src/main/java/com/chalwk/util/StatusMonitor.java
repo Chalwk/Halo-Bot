@@ -27,13 +27,12 @@ public class StatusMonitor {
 
     private static final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private static final String messageIDFile = "message-ids.json";
-    private static String serverKey;
+    private static String serverID;
 
     public StatusMonitor(String serverKey, int intervalInSeconds) {
-        StatusMonitor.serverKey = serverKey;
-
+        serverID = serverKey;
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 3, intervalInSeconds * 1000L);
+        timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 10, intervalInSeconds * 1000L);
     }
 
     private static EmbedBuilder createEmbedMessage(JSONObject data) {
@@ -75,13 +74,15 @@ public class StatusMonitor {
         EmbedBuilder embed = createEmbedMessage(getStatusTable());
         Message message = channel.sendMessageEmbeds(embed.build()).complete();
         executorService.schedule(() -> {
+
             JSONObject channelIDs;
             try {
                 channelIDs = FileIO.getJSONObjectFromFile(messageIDFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            channelIDs.put(serverKey, message.getId());
+            channelIDs.put(serverID, message.getId());
+
             FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
         }, 1000, TimeUnit.MILLISECONDS);
     }
@@ -102,7 +103,7 @@ public class StatusMonitor {
 
     private static String getMessageID() {
         JSONObject channelIDs = getChannelIds();
-        return channelIDs.has(serverKey) && !channelIDs.getString(serverKey).isEmpty() ? channelIDs.getString(serverKey) : null;
+        return channelIDs.has(serverID) && !channelIDs.getString(serverID).isEmpty() ? channelIDs.getString(serverID) : null;
     }
 
     private static JSONObject getChannelIds() {
@@ -115,7 +116,7 @@ public class StatusMonitor {
 
     private static JSONObject getStatusTable() throws IOException {
         JSONObject parentTable = FileIO.getJSONObjectFromFile("halo-events.json");
-        return parentTable.getJSONObject(serverKey).getJSONObject("status");
+        return parentTable.getJSONObject(serverID).getJSONObject("status");
     }
 
     private static class StatusUpdaterTask extends TimerTask {

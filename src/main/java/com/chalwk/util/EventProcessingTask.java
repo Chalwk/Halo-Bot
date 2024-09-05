@@ -20,12 +20,10 @@ import static com.chalwk.util.Listeners.GuildReady.getGuild;
 public class EventProcessingTask {
 
     private static final String HALO_EVENTS_FILE = "halo-events.json";
-    private static String serverKey;
-    //private static final FileIO fileIO;
+    private static String serverID;
 
     public EventProcessingTask(String serverKey, int intervalInSeconds) {
-        //fileIO = new FileIO();
-        EventProcessingTask.serverKey = serverKey;
+        serverID = serverKey;
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new EventProcessingTask.Task(), 1000 * 5, intervalInSeconds * 1000L);
     }
@@ -59,7 +57,7 @@ public class EventProcessingTask {
             try {
                 JsonData data = getEventTable();
                 JSONObject parentTable = data.getParentTable();
-                JSONArray eventTable = data.getEventTable(serverKey); // sapp_events
+                JSONArray eventTable = data.getEventTable(serverID); // sapp_events
 
                 for (int i = 0; i < eventTable.length(); i++) {
                     EmbedData result = getGetServerData(eventTable, i);

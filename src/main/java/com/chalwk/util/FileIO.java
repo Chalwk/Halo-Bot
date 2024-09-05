@@ -12,6 +12,9 @@ public class FileIO {
 
     static String programPath = getProgramPath();
 
+    public FileIO() {
+    }
+
     private static String getProgramPath() {
         String currentDirectory = System.getProperty("user.dir");
         currentDirectory = currentDirectory.replace("\\", "/");
