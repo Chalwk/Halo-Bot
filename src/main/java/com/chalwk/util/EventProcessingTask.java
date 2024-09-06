@@ -4,7 +4,6 @@
 package com.chalwk.util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -12,10 +11,11 @@ import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.chalwk.util.Listeners.GuildReady.getGuild;
+import static com.chalwk.util.util.getTextChannel;
 
 public class EventProcessingTask {
 
@@ -26,20 +26,6 @@ public class EventProcessingTask {
         serverID = serverKey;
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new EventProcessingTask.Task(), 1000 * 5, intervalInSeconds * 1000L);
-    }
-
-    private static JsonData getEventTable() throws IOException {
-        JSONObject parentTable = FileIO.getJSONObjectFromFile(HALO_EVENTS_FILE);
-        return new JsonData(parentTable);
-    }
-
-    private static TextChannel getTextChannel(String channelID) {
-        Guild guild = getGuild();
-        TextChannel channel = guild.getTextChannelById(channelID);
-        if (channel == null) {
-            throw new IllegalArgumentException("[EventProcessing Task] Channel not found: " + channelID);
-        }
-        return channel;
     }
 
     private static void sendMessage(String title, String description, String colorName, String channelID) {
@@ -55,14 +41,15 @@ public class EventProcessingTask {
         @Override
         public void run() {
             try {
-                JsonData data = getEventTable();
-                JSONObject parentTable = data.getParentTable();
-                JSONArray eventTable = data.getEventTable(serverID); // sapp_events
 
-                for (int i = 0; i < eventTable.length(); i++) {
-                    EmbedData result = getGetServerData(eventTable, i);
+                JSONObject parentTable = FileIO.getJSONObjectFromFile(HALO_EVENTS_FILE);
+                JSONArray eventTable = parentTable.getJSONObject(serverID).getJSONArray("sapp_events");
+
+                for (Iterator<Object> it = eventTable.iterator(); it.hasNext(); ) {
+                    JSONObject event = (JSONObject) it.next();
+                    EmbedData result = getGetServerData(event);
                     sendMessage(result.title(), result.description(), result.color(), result.channelID());
-                    eventTable.remove(i);
+                    it.remove();
                 }
                 FileIO.saveJSONObjectToFile(parentTable, HALO_EVENTS_FILE);
 
@@ -72,8 +59,7 @@ public class EventProcessingTask {
         }
 
         @NotNull
-        private EmbedData getGetServerData(JSONArray eventTable, int tableIndex) {
-            JSONObject event = eventTable.getJSONObject(tableIndex);
+        private EmbedData getGetServerData(JSONObject event) {
             String title = event.getString("title");
             String description = event.getString("description");
             String channelID = event.getString("channel");

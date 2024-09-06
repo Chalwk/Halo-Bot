@@ -5,6 +5,7 @@ package com.chalwk.bot;
 
 import com.chalwk.CommandManager.CommandListener;
 import com.chalwk.commands.channel;
+import com.chalwk.util.EventProcessingTask;
 import com.chalwk.util.FileIO;
 import com.chalwk.util.Listeners.GuildReady;
 import com.chalwk.util.Logging.Logger;
@@ -95,10 +96,8 @@ public class BotInitializer {
 
         for (String serverID : parentTable.keySet()) {
             if (!monitoredServers.contains(serverID)) {
-
-                System.out.println("Server ID: " + serverID + " not monitored. Adding to monitor list.");
                 new StatusMonitor(serverID, 30);
-                //new EventProcessingTask(serverID, 1);
+                new EventProcessingTask(serverID, 1);
                 monitoredServers.add(serverID);
             }
         }
