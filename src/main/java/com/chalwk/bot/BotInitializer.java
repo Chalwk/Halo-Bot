@@ -41,15 +41,6 @@ public class BotInitializer {
     }
 
     /**
-     * Returns the ShardManager instance used to manage the bot.
-     *
-     * @return The ShardManager instance used to manage the bot.
-     */
-    public static ShardManager getShardManager() {
-        return shardManager;
-    }
-
-    /**
      * Initializes the bot and sets up event listeners and commands.
      */
     public void initializeBot() throws IOException {

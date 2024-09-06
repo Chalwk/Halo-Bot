@@ -1,14 +1,14 @@
 {
-  "server_1": {
+    "server_1": {
     "sapp_events": [],
     "status": {
-      "Server Name": "LNZ DEV SERVER",
-      "CHANNEL_ID": "1280825407255347200",
-      "Mode": "CTF",
-      "Server IP": "127.0.0.1:2310",
-      "Player List": [],
-      "Map": "bloodgulch",
-      "Total Players": 0
+        "Server Name": "LNZ DEV SERVER",
+        "CHANNEL_ID": "1280825407255347200",
+        "Mode": "CTF",
+        "Server IP": "127.0.0.1:2310",
+        "Player List": [],
+        "Map": "bloodgulch",
+        "Total Players": 0
     }
-  }
+    }
 }
