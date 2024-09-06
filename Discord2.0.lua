@@ -44,14 +44,13 @@ local config = {
     timeStampFormat = "%A %d %B %Y - %X",
 
     -- Status settings
-    -- These settings are used to update the server status message in Discord.
     STATUS_SETTINGS = {
         -- The channel ID where the bot will update an embed status message (e.g., server name, IP, map, mode, total players)
         channelID = "1280825407255347200",
         -- The server name
-        serverName = "SERVER NME HERE",
+        serverName = "LNZ DEV SERVER",
         -- The server IP
-        serverIP = "127.0.0.1:xxxx"
+        serverIP = "127.0.0.1:2310"
     },
 
     --------------------------------
