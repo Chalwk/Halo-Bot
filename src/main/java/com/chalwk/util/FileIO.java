@@ -7,18 +7,29 @@ import com.chalwk.util.Logging.Logger;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.CodeSource;
 
 public class FileIO {
 
     static String programPath = getProgramPath();
 
     public FileIO() {
+
     }
 
     private static String getProgramPath() {
-        String currentDirectory = System.getProperty("user.dir");
-        currentDirectory = currentDirectory.replace("\\", "/");
-        return currentDirectory + "/Halo-Bot/";
+        CodeSource codeSource = FileIO.class.getProtectionDomain().getCodeSource();
+        URL jarFileUrl = codeSource.getLocation();
+        try {
+            URI jarFileUri = jarFileUrl.toURI();
+            File jarFilePath = new File(jarFileUri);
+            return jarFilePath.getParentFile().toString();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Failed to get program path: " + e.getMessage());
+        }
     }
 
     private static void checkExists(File file) throws IOException {
@@ -33,7 +44,8 @@ public class FileIO {
 
     public static String readFile(String fileName) throws IOException {
 
-        File file = new File(programPath + fileName);
+        File file = new File(getProgramPath() + "\\" + fileName);
+
         checkExists(file);
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
