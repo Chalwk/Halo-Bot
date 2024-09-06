@@ -4,6 +4,7 @@
 package com.chalwk.util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -15,17 +16,25 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.chalwk.util.util.getTextChannel;
-
 public class EventProcessingTask {
 
     private static final String HALO_EVENTS_FILE = "halo-events.json";
     private static String serverID;
+    private static Guild guild;
 
-    public EventProcessingTask(String serverKey, int intervalInSeconds) {
+    public EventProcessingTask(String serverKey, int intervalInSeconds, Guild thisGuild) {
+        guild = thisGuild;
         serverID = serverKey;
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new EventProcessingTask.Task(), 1000 * 5, intervalInSeconds * 1000L);
+    }
+
+    private static TextChannel getTextChannel(String channelID) {
+        TextChannel channel = guild.getTextChannelById(channelID);
+        if (channel == null) {
+            throw new IllegalArgumentException("[EventProcessing Task] Channel not found: " + channelID);
+        }
+        return channel;
     }
 
     private static void sendMessage(String title, String description, String colorName, String channelID) {

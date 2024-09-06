@@ -5,11 +5,7 @@ package com.chalwk.bot;
 
 import com.chalwk.CommandManager.CommandListener;
 import com.chalwk.commands.channel;
-import com.chalwk.util.EventProcessingTask;
-import com.chalwk.util.FileIO;
 import com.chalwk.util.Listeners.GuildReady;
-import com.chalwk.util.Logging.Logger;
-import com.chalwk.util.StatusMonitor;
 import com.chalwk.util.authentication;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -17,13 +13,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A class responsible for initializing and setting up the bot for the Virtual Pets game project.
@@ -34,8 +25,6 @@ public class BotInitializer {
      * An instance of the PetDataHandler class to manage pet data.
      */
     public static ShardManager shardManager;
-
-    private static final Set<String> monitoredServers = new HashSet<>();
 
     /**
      * The bot's authentication token.
@@ -51,6 +40,11 @@ public class BotInitializer {
         this.token = authentication.getToken();
     }
 
+    /**
+     * Returns the ShardManager instance used to manage the bot.
+     *
+     * @return The ShardManager instance used to manage the bot.
+     */
     public static ShardManager getShardManager() {
         return shardManager;
     }
@@ -72,35 +66,6 @@ public class BotInitializer {
         shardManager = builder.build();
         shardManager.addEventListener(new GuildReady());
         registerCommands(shardManager);
-
-        scheduleHaloDataProcessing();
-    }
-
-    private void scheduleHaloDataProcessing() {
-        Timer timer = new Timer();
-        TimerTask haloDataTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    processHaloData();
-                } catch (IOException e) {
-                    Logger.info("Error processing halo data: " + e.getMessage());
-                }
-            }
-        };
-        timer.schedule(haloDataTask, 0, 1000 * 30);
-    }
-
-    private void processHaloData() throws IOException {
-        JSONObject parentTable = FileIO.getJSONObjectFromFile("halo-events.json");
-
-        for (String serverID : parentTable.keySet()) {
-            if (!monitoredServers.contains(serverID)) {
-                new StatusMonitor(serverID, 30);
-                new EventProcessingTask(serverID, 1);
-                monitoredServers.add(serverID);
-            }
-        }
     }
 
     /**

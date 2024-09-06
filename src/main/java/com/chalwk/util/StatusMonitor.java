@@ -21,15 +21,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.chalwk.util.Listeners.GuildReady.getGuild;
-
 public class StatusMonitor {
 
     private static final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private static final String messageIDFile = "message-ids.json";
     private static String serverID;
 
-    public StatusMonitor(String serverKey, int intervalInSeconds) {
+    private static Guild guild;
+
+    public StatusMonitor(String serverKey, int intervalInSeconds, Guild thisGuild) {
+        guild = thisGuild;
         serverID = serverKey;
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 10, intervalInSeconds * 1000L);
@@ -92,7 +93,6 @@ public class StatusMonitor {
     }
 
     private static TextChannel getTextChannel() throws IOException {
-        Guild guild = getGuild();
         String channelID = getStatusTable().getString("CHANNEL_ID");
         TextChannel channel = guild.getTextChannelById(channelID);
         if (channel == null) {
