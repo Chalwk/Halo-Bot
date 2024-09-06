@@ -43,20 +43,15 @@ local config = {
     -- The timestamp format
     timeStampFormat = "%A %d %B %Y - %X",
 
-    -- Path to the JSON Data file that will store all the events to be processed by the Discord Bot.
-    jsonEventsPath = "./Halo-Bot/halo-events.json",
-
-    -- Path to the JSON library file
-    jsonLibraryPath = "./Halo-Bot/json.lua",
-
     -- Status settings
+    -- These settings are used to update the server status message in Discord.
     STATUS_SETTINGS = {
         -- The channel ID where the bot will update an embed status message (e.g., server name, IP, map, mode, total players)
         channelID = "1280825407255347200",
         -- The server name
-        serverName = "LNZ DEV SERVER",
+        serverName = "SERVER NME HERE",
         -- The server IP
-        serverIP = "127.0.0.1:2310"
+        serverIP = "127.0.0.1:xxxx"
     },
 
     --------------------------------
@@ -309,15 +304,21 @@ api_version = '1.12.0.0'
 
 local serverData, players = {}, {}
 
+-- Path to the JSON Data file that will store all the events to be processed by the Discord Bot.
+local jsonEventsPath = "./Halo-Bot/halo-events.json"
+
+-- Path to the JSON library file
+local jsonLibraryPath = "./Halo-Bot/json.lua"
+
 local date = os.date
-local json = loadfile(config.jsonLibraryPath)()
+local json = loadfile(jsonLibraryPath)()
 
 local ffa, falling, distance, first_blood, map, mode, game_type
 
 --- Reads the JSON data file and returns the decoded data as a Lua table.
 -- @return Table|nil Decoded JSON data or nil if the file couldn't be read
 local function getJSONData()
-    local file = io.open(config.jsonEventsPath, "r")
+    local file = io.open(jsonEventsPath, "r")
     if file then
         local content = file:read("*all")
         file:close()
@@ -329,7 +330,7 @@ end
 --- Updates the JSON data file with the provided Lua table and writes the encoded data to the file.
 -- @param t Table The Lua table containing the updated data
 local function updateJSONData(t)
-    local file = io.open(config.jsonEventsPath, "w")
+    local file = io.open(jsonEventsPath, "w")
     if file then
         file:write(json:encode_pretty(t))
         file:close()
