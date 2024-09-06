@@ -24,8 +24,7 @@ public class GuildReady extends ListenerAdapter {
              ||    ||     |||     ||       .|'    ||        .|'     '   ||  .
              ||''''||    |  ||    ||       ||      ||       ||          ||''|
              ||    ||   .''''|.   ||       '|.     ||       '|.      .  ||
-            .||.  .||. .|.  .||. .||.....|  ''|...|'         ''|....'  .||.....|
-            """;
+            .||.  .||. .|.  .||. .||.....|  ''|...|'         ''|....'  .||.....|""";
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
