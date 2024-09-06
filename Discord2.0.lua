@@ -23,6 +23,7 @@ Events:
 - event_spawn               A player spawns
 - event_login               A player logs in
 - event_team_switch         A player switches teams
+- event_score               A player scores
 - script_load               This script is loaded
 - script_unload             This script is unloaded
 - event_map_reset           The map is reset
@@ -44,6 +45,7 @@ local config = {
     timeStampFormat = "%A %d %B %Y - %X",
 
     -- Status settings
+    -- These settings are used to update the server status message in Discord.
     STATUS_SETTINGS = {
         -- The channel ID where the bot will update an embed status message (e.g., server name, IP, map, mode, total players)
         channelID = "1280825407255347200",
@@ -63,7 +65,7 @@ local config = {
             -- Available placeholders: $map, $mode, $totalPlayers, $faa
             enabled = true,
             title = "🌄 A new game has started!",
-            description = "Map: [$map] - [$mode] - ($faa) | Players: $totalPlayers",
+            description = "- Map: [**$map**]\n- [**$mode**] (**$faa**)\n- Players: **$totalPlayers**",
             color = "GREEN",
             channel = "1280825450901405757"
         },
@@ -71,15 +73,15 @@ local config = {
             -- Available placeholders: $map, $mode, $totalPlayers, $faa
             enabled = true,
             title = "🌅 The game has ended!",
-            description = "The game ended with $totalPlayers players.",
+            description = "The game ended with **$totalPlayers** players.",
             color = "RED",
             channel = "1280825450901405757"
         },
         ["OnJoin"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers, $playerID
             enabled = true,
-            title = "🟢 Player has joined the server!",
-            description = "$playerName",
+            title = "🟢 $playerName has joined the server!",
+            description = "",
             color = "GREEN",
             channel = "1280825450901405757"
         },
@@ -87,16 +89,16 @@ local config = {
         ["OnQuit"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers, $playerID
             enabled = true,
-            title = "🔴 Player has left the server!",
-            description = "$playerName",
+            title = "🔴 $playerName has left the server!",
+            description = "",
             color = "RED",
             channel = "1280825450901405757"
         },
         ["OnSpawn"] = {
             -- Available placeholders: $playerName, $playerID
             enabled = false,
-            title = "🐣 Player has spawned!",
-            description = "$playerName",
+            title = "🐣 $playerName has spawned!",
+            description = "",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
@@ -105,7 +107,7 @@ local config = {
             -- Available placeholders: $playerName, $team, $playerID
             enabled = true,
             title = "👥 Player has switched teams!",
-            description = "$playerName switched teams. New team: [$team]",
+            description = "**$playerName** switched teams. New team: **[$team]**",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
@@ -113,8 +115,8 @@ local config = {
         ["OnWarp"] = {
             -- Available placeholders: $playerName, $playerID
             enabled = true,
-            title = "𒅒 Player is warping...",
-            description = "$playerName",
+            title = "𒅒 $playerName is warping...",
+            description = "",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
@@ -122,39 +124,39 @@ local config = {
             -- Available placeholders: $map, $mode
             enabled = true,
             title = "🔄 The map has been reset!",
-            description = "[$map / $mode]",
+            description = "- **$map**\n- **$mode**",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
         ["OnLogin"] = {
             -- Available placeholders: $playerName, $playerID
             enabled = false,
-            title = "👤 Player has logged in!",
-            description = "$playerName",
+            title = "👤 $playerName has logged in!",
+            description = "",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
         ["OnSnap"] = {
             -- Available placeholders: $playerName, $playerID
             enabled = false,
-            title = "⊹ Player has snapped!",
-            description = "$playerName",
+            title = "⊹ $playerName snapped!",
+            description = "",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
         ["OnCommand"] = {
-            -- Available placeholders: $type, $name, $id, $cmd, $playerID
+            -- Available placeholders: $type, $name, $id, $command, $playerID
             enabled = false,
             title = "⌘ Command executed!",
-            description = "[$type] $name ($id): $cmd",
+            description = "[**$type**] **$playerName** (**$id**): *$command*",
             color = "RED",
             channel = "1281511866761351189"
         },
         ["OnChat"] = {
-            -- Available placeholders: $type, $name, $id, $msg, $playerID
+            -- Available placeholders: $type, $playerName, $id, $message, $playerID
             enabled = true,
             title = "🗨️ Chat message sent!",
-            description = "[$type] $name ($id): $msg",
+            description = "[**$type**] **$playerName** (**$id**): *$message*",
             color = "BLUE",
             channel = "1280825450901405757"
         },
@@ -205,16 +207,16 @@ local config = {
             [1] = {
                 -- first blood
                 enabled = true,
-                title = "☠️ First blood!",
-                description = "$killerName drew first blood",
+                title = "☠️ $killerName drew first blood!",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [2] = {
                 -- killed from the grave
                 enabled = true,
-                title = "☠️ Killed from the grave!",
-                description = "$victimName was killed from the grave by $killerName",
+                title = "☠️ $victimName was killed from the grave by $killerName",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
@@ -223,72 +225,72 @@ local config = {
                 -- In order to preserve support for custom maps that have custom vehicle tag ids, the script will not check for the vehicle tag id.
                 -- Instead we send a generic message for all vehicle kills.
                 enabled = true,
-                title = "☠️ Vehicle kill!",
-                description = "$victimName was killed by $killerName",
+                title = "☠️ $victimName was killed by $killerName",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [4] = {
                 -- pvp
                 enabled = true,
-                title = "☠️ PvP kill!",
-                description = "$victimName was killed by $killerName",
+                title = "☠️ $victimName was killed by $killerName",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [5] = {
                 -- guardians
                 enabled = true,
-                title = "☠️ Guardians kill!",
-                description = "$victimName was killed by the guardians",
+                title = "☠️ $victimName was killed by the guardians",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [6] = {
                 -- suicide
                 enabled = true,
-                title = "☠️ Suicide!",
-                description = "$victimName committed suicide",
+                title = "☠️ $victimName committed suicide!",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [7] = {
                 -- betrayal
                 enabled = true,
-                title = "☠️ Betrayal!",
-                description = "$victimName was betrayed by $killerName",
+                title = "☠️ $victimName was betrayed by $killerName!",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [8] = {
                 -- squashed by a vehicle (when an unoccupied vehicle collides with you)
                 enabled = true,
-                title = "☠️ Squashed by a vehicle!",
-                description = "$victimName was squashed by a vehicle",
+                title = "☠️ $victimName was squashed by a vehicle",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [9] = {
                 -- fall damage
                 enabled = true,
-                title = "☠️ Fall Damage!",
-                description = "$victimName fell and broke their leg",
+                title = "☠️ $victimName fell and broke their leg",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [10] = {
                 -- killed by the server
                 enabled = true,
-                title = "☠️ Kill by the server!",
-                description = "$victimName was killed by the server",
+                title = "☠️ $victimName was killed by the server",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             },
             [11] = {
                 -- unknown death
                 enabled = true,
-                title = "☠️ Unknown death!",
-                description = "$victimName died",
+                title = "☠️ $victimName died",
+                description = "",
                 color = "RED",
                 channel = "1280825450901405757"
             }
@@ -309,7 +311,14 @@ local jsonEventsPath = "./Halo-Bot/halo-events.json"
 -- Path to the JSON library file
 local jsonLibraryPath = "./Halo-Bot/json.lua"
 
-local date = os.date
+local _pairs = pairs
+local _open = io.open
+local _date = os.date
+local _clock = os.clock
+local _tonumber = tonumber
+local _insert = table.insert
+local _floor = math.floor
+local _format = string.format
 local json = loadfile(jsonLibraryPath)()
 
 local ffa, falling, distance, first_blood, map, mode, game_type
@@ -317,7 +326,7 @@ local ffa, falling, distance, first_blood, map, mode, game_type
 --- Reads the JSON data file and returns the decoded data as a Lua table.
 -- @return Table|nil Decoded JSON data or nil if the file couldn't be read
 local function getJSONData()
-    local file = io.open(jsonEventsPath, "r")
+    local file = _open(jsonEventsPath, "r")
     if file then
         local content = file:read("*all")
         file:close()
@@ -329,7 +338,7 @@ end
 --- Updates the JSON data file with the provided Lua table and writes the encoded data to the file.
 -- @param t Table The Lua table containing the updated data
 local function updateJSONData(t)
-    local file = io.open(jsonEventsPath, "w")
+    local file = _open(jsonEventsPath, "w")
     if file then
         file:write(json:encode_pretty(t))
         file:close()
@@ -393,7 +402,7 @@ end
 local function getTotalPlayers(isQuit)
 
     -- Retrieve the current number of players on the server and adjust total players count if a player has quit.
-    local total = tonumber(get_var(0, "$pn"))
+    local total = _tonumber(get_var(0, "$pn"))
     return (isQuit and total - 1 or total)
 end
 
@@ -406,7 +415,7 @@ local function parseMessageTemplate(String, args)
     -- Iterate over the provided arguments and replace placeholders in the message template
     local message = String
 
-    for placeholder, value in pairs(args) do
+    for placeholder, value in _pairs(args) do
         message = message:gsub(placeholder, value)
     end
 
@@ -489,7 +498,7 @@ local function notify(eventName, args)
     local jsonData = getJSONData()
     local serverEvents = jsonData[config.serverID].sapp_events
 
-    table.insert(serverEvents, {
+    _insert(serverEvents, {
         title = embedTitle,
         description = message,
         color = embedColor,
@@ -531,7 +540,7 @@ local function getPlayerList(isQuit, excludeThisPlayer)
         if player_present(i) then
             local player = players[i]
             if player and not exclude(isQuit, i, excludeThisPlayer) then
-                table.insert(playerList, "- " .. player.name)
+                _insert(playerList, "- " .. player.name)
             end
         end
     end
@@ -611,8 +620,8 @@ end
 local function getJoinQuit(player, isQuit)
 
     local ping = get_var(player.id, "$ping")
-    local timeStamp = date(config.timeStampFormat)
-    local level = tonumber(get_var(player.id, '$lvl'))
+    local timeStamp = _date(config.timeStampFormat)
+    local level = _tonumber(get_var(player.id, '$lvl'))
 
     player.level = level -- update their level in case it was changed during the game
 
@@ -672,7 +681,7 @@ function OnSpawn(id)
         -- Reset player meta data and send an "OnSpawn" event notification
         players[id].meta = 0
         players[id].switched = nil
-        players[id].lapTime = os.clock()
+        players[id].lapTime = _clock()
         notify("OnSpawn", {
             ["$playerName"] = player.name,
             ["$playerID"] = player.id
@@ -811,9 +820,9 @@ function OnCommand(id, command, environment)
         -- Send an "OnCommand" event notification
         notify("OnCommand", {
             ["$type"] = command_type[environment],
-            ["$name"] = player.name,
+            ["$playerName"] = player.name,
             ["$id"] = id,
-            ["$cmd"] = cmd,
+            ["$command"] = cmd,
             ["$playerID"] = player.id
         })
     end
@@ -860,9 +869,9 @@ function OnChat(id, message, environment)
             -- Send an "OnChat" event notification
             notify("OnChat", {
                 ["$type"] = chat_type[environment],
-                ["$name"] = player.name,
+                ["$playerName"] = player.name,
                 ["$id"] = id,
-                ["$msg"] = message,
+                ["$message"] = message,
                 ["$playerID"] = player.id
             })
         end
@@ -870,10 +879,10 @@ function OnChat(id, message, environment)
 end
 
 local function formatTime(lapTime)
-    local minutes = math.floor(lapTime / 60)
-    local seconds = math.floor(lapTime % 60)
-    local milliseconds = math.floor((lapTime * 1000) % 1000)
-    return string.format("%02d:%02d.%03d", minutes, seconds, milliseconds)
+    local minutes = _floor(lapTime / 60)
+    local seconds = _floor(lapTime % 60)
+    local milliseconds = _floor((lapTime * 1000) % 1000)
+    return _format("%02d:%02d.%03d", minutes, seconds, milliseconds)
 end
 
 function OnScore(id)
@@ -886,7 +895,7 @@ function OnScore(id)
             eventType = 1
         elseif (game_type == "race") then
             eventType = not ffa and 2 or 3
-            player.lapTime = formatTime(os.clock() - player.lapTime)
+            player.lapTime = formatTime(_clock() - player.lapTime)
         elseif (game_type == "slayer") then
             eventType = not ffa and 4 or 5
         end
@@ -916,8 +925,8 @@ end
 function OnDeath(victimIndex, killerIndex, metaID)
 
     -- Convert the index IDs to numbers
-    victimIndex = tonumber(victimIndex)
-    killerIndex = tonumber(killerIndex)
+    victimIndex = _tonumber(victimIndex)
+    killerIndex = _tonumber(killerIndex)
 
     -- Retrieve the victim and killer player objects
     local victimPlayer = players[victimIndex]
