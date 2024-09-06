@@ -83,45 +83,45 @@ local config = {
             channel = "1280825450901405757"
         },
         ["OnJoin"] = {
-            -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers
+            -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers, $playerID
             enabled = true,
             title = "🟢 Player has joined the server!",
-            description = "Player: $playerName",
+            description = "$playerName",
             color = "GREEN",
             channel = "1280825450901405757"
         },
         -- OnQuit:
         ["OnQuit"] = {
-            -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers
+            -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers, $playerID
             enabled = true,
             title = "🔴 Player has left the server!",
-            description = "Player: $playerName",
+            description = "$playerName",
             color = "RED",
             channel = "1280825450901405757"
         },
         ["OnSpawn"] = {
-            -- Available placeholders: $playerName
+            -- Available placeholders: $playerName, $playerID
             enabled = false,
             title = "🐣 Player has spawned!",
-            description = "Player: $playerName",
+            description = "$playerName",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
         -- OnSwitch:
         ["OnSwitch"] = {
-            -- Available placeholders: $playerName, $team
+            -- Available placeholders: $playerName, $team, $playerID
             enabled = true,
             title = "👥 Player has switched teams!",
-            description = "Player: $playerName switched teams. New team: [$team]",
+            description = "$playerName switched teams. New team: [$team]",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
         -- OnWarp:
         ["OnWarp"] = {
-            -- Available placeholders: $playerName
+            -- Available placeholders: $playerName, $playerID
             enabled = true,
             title = "𒅒 Player is warping...",
-            description = "Player: $playerName",
+            description = "$playerName",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
@@ -129,28 +129,28 @@ local config = {
             -- Available placeholders: $map, $mode
             enabled = true,
             title = "🔄 The map has been reset!",
-            description = "Map: [$map / $mode]",
+            description = "[$map / $mode]",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
         ["OnLogin"] = {
-            -- Available placeholders: $playerName
+            -- Available placeholders: $playerName, $playerID
             enabled = false,
             title = "👤 Player has logged in!",
-            description = "Player: $playerName",
+            description = "$playerName",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
         ["OnSnap"] = {
-            -- Available placeholders: $playerName
+            -- Available placeholders: $playerName, $playerID
             enabled = false,
             title = "⊹ Player has snapped!",
-            description = "Player: $playerName",
+            description = "$playerName",
             color = "YELLOW",
             channel = "1280825450901405757"
         },
         ["OnCommand"] = {
-            -- Available placeholders: $type, $name, $id, $cmd
+            -- Available placeholders: $type, $name, $id, $cmd, $playerID
             enabled = false,
             title = "⌘ Command executed!",
             description = "[$type] $name ($id): $cmd",
@@ -158,7 +158,7 @@ local config = {
             channel = "1280825450901405757"
         },
         ["OnChat"] = {
-            -- Available placeholders: $type, $name, $id, $msg
+            -- Available placeholders: $type, $name, $id, $msg, $playerID
             enabled = true,
             title = "🗨️ Chat message sent!",
             description = "[$type] $name ($id): $msg",
@@ -166,9 +166,9 @@ local config = {
             channel = "1280825450901405757"
         },
         ["OnDeath"] = {
+            -- Available placeholders: $killerName, $victimName, $killerID, $victimID
             [1] = {
                 -- first blood
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ First blood!",
                 description = "$killerName drew first blood",
@@ -177,7 +177,6 @@ local config = {
             },
             [2] = {
                 -- killed from the grave
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Killed from the grave!",
                 description = "$victimName was killed from the grave by $killerName",
@@ -186,7 +185,6 @@ local config = {
             },
             [3] = {
                 -- vehicle kill
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Vehicle kill!",
                 description = "$victimName was run over by $killerName",
@@ -195,7 +193,6 @@ local config = {
             },
             [4] = {
                 -- pvp
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ PvP kill!",
                 description = "$victimName was killed by $killerName",
@@ -204,7 +201,6 @@ local config = {
             },
             [5] = {
                 -- guardians
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Guardians kill!",
                 description = "$victimName was killed by the guardians",
@@ -213,7 +209,6 @@ local config = {
             },
             [6] = {
                 -- suicide
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Suicide!",
                 description = "$victimName committed suicide",
@@ -222,7 +217,6 @@ local config = {
             },
             [7] = {
                 -- betrayal
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Betrayal!",
                 description = "$victimName was betrayed by $killerName",
@@ -231,7 +225,6 @@ local config = {
             },
             [8] = {
                 -- squashed by a vehicle
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Squashed by a vehicle!",
                 description = "$victimName was squashed by a vehicle",
@@ -240,7 +233,6 @@ local config = {
             },
             [9] = {
                 -- fall damage
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Fall Damage!",
                 description = "$victimName fell and broke their leg",
@@ -249,7 +241,6 @@ local config = {
             },
             [10] = {
                 -- killed by the server
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Kill by the server!",
                 description = "$victimName was killed by the server",
@@ -258,7 +249,6 @@ local config = {
             },
             [11] = {
                 -- unknown death
-                -- Available placeholders: $killerName, $victimName
                 enabled = true,
                 title = "☠️ Unknown death!",
                 description = "$victimName died",
@@ -571,6 +561,7 @@ local function getJoinQuit(player, isQuit)
 
     -- Return a table containing player information
     return {
+        ["$playerID"] = player.id,
         ["$playerName"] = player.name,
         ["$ipAddress"] = player.ip,
         ["$cdHash"] = player.hash,
@@ -621,7 +612,8 @@ function OnSpawn(id)
         players[id].meta = 0
         players[id].switched = nil
         notify("OnSpawn", {
-            ["$playerName"] = player.name
+            ["$playerName"] = player.name,
+            ["$playerID"] = player.id
         })
     end
 end
@@ -659,7 +651,8 @@ function OnSwitch(id)
         -- Send an "OnSwitch" event notification
         notify("OnSwitch", {
             ["$playerName"] = player.name,
-            ["$team"] = player.team
+            ["$team"] = player.team,
+            ["$playerID"] = player.id
         })
     end
 end
@@ -675,7 +668,8 @@ function OnWarp(id)
 
         -- Send an "OnWarp" event notification
         notify("OnWarp", {
-            ["$playerName"] = player.name
+            ["$playerName"] = player.name,
+            ["$playerID"] = player.id
         })
     end
 end
@@ -701,7 +695,8 @@ function OnLogin(id)
 
         -- Send an "OnLogin" event notification
         notify("OnLogin", {
-            ["$playerName"] = player.name
+            ["$playerName"] = player.name,
+            ["$playerID"] = player.id
         })
     end
 end
@@ -717,7 +712,8 @@ function OnSnap(id)
 
         -- Send an "OnSnap" event notification
         notify("OnSnap", {
-            ["$playerName"] = player.name
+            ["$playerName"] = player.name,
+            ["$playerID"] = player.id
         })
     end
 end
@@ -755,7 +751,8 @@ function OnCommand(id, command, environment)
             ["$type"] = command_type[environment],
             ["$name"] = player.name,
             ["$id"] = id,
-            ["$cmd"] = cmd
+            ["$cmd"] = cmd,
+            ["$playerID"] = player.id
         })
     end
 end
@@ -803,7 +800,8 @@ function OnChat(id, message, environment)
                 ["$type"] = chat_type[environment],
                 ["$name"] = player.name,
                 ["$id"] = id,
-                ["$msg"] = message
+                ["$msg"] = message,
+                ["$playerID"] = player.id
             })
         end
     end
@@ -894,8 +892,10 @@ function OnDeath(victimIndex, killerIndex, metaID)
         -- Send an "OnDeath" event notification
         notify("OnDeath", {
             ["eventType"] = eventType,
-            ["$killerName"] = killerPlayer and killerPlayer.name or "",
-            ["$victimName"] = victimPlayer.name
+            ["$killerName"] = killerPlayer and killerPlayer.name or "N/A",
+            ["$victimName"] = killerPlayer and victimPlayer.name or "N/A",
+            ["$killerID"] = killerPlayer and killerPlayer.id or "N/A",
+            ["$victimID"] = victimPlayer and victimPlayer.id or "N/A",
         })
     end
 end
