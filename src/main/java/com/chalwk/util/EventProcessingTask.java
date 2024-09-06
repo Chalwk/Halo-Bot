@@ -42,7 +42,8 @@ public class EventProcessingTask {
         channel.sendMessageEmbeds(new EmbedBuilder()
                 .setTitle(title)
                 .setDescription(description)
-                .setColor(Color.getColor(colorName)).build()).queue();
+                .setColor(Color.getColor(colorName)) // todo: fix this
+                .build()).queue();
     }
 
     private static class Task extends TimerTask {

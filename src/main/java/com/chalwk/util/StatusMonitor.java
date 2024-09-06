@@ -18,7 +18,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class StatusMonitor {
@@ -44,7 +43,7 @@ public class StatusMonitor {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy | HH:mm:ss");
         String timestamp = now.format(formatter);
         embed.setFooter("Last updated: " + timestamp, null);
-        embed.setColor(0x00FF00);
+        embed.setColor(0x00FF00); // green
 
         for (StatusField field : StatusField.values()) {
             embed.addField(field.getFieldName(), getFieldValue(data, field), false);
@@ -74,7 +73,6 @@ public class StatusMonitor {
     private static void createInitialMessage(TextChannel channel) throws IOException {
         EmbedBuilder embed = createEmbedMessage(getStatusTable());
         Message message = channel.sendMessageEmbeds(embed.build()).complete();
-        executorService.schedule(() -> {
 
             JSONObject channelIDs;
             try {
@@ -83,9 +81,7 @@ public class StatusMonitor {
                 throw new RuntimeException(e);
             }
             channelIDs.put(serverID, message.getId());
-
             FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
-        }, 1000, TimeUnit.MILLISECONDS);
     }
 
     private static boolean messageExists(TextChannel channel, String messageID) {

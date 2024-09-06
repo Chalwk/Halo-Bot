@@ -16,7 +16,6 @@ Events:
 - event_command             A player executes a command
 - event_game_start          A new game starts
 - event_game_end            A game ends
-- event_prejoin             A player attempts to join the server
 - event_join                A player joins the server
 - event_leave               A player leaves the server
 - event_die                 A player dies
@@ -155,7 +154,7 @@ local config = {
             title = "⌘ Command executed!",
             description = "[$type] $name ($id): $cmd",
             color = "RED",
-            channel = "1280825450901405757"
+            channel = "1281511866761351189"
         },
         ["OnChat"] = {
             -- Available placeholders: $type, $name, $id, $msg, $playerID
@@ -164,6 +163,48 @@ local config = {
             description = "[$type] $name ($id): $msg",
             color = "BLUE",
             channel = "1280825450901405757"
+        },
+        ["OnScore"] = {
+            [1] = {
+                -- Available placeholders: $playerName, $playerTeam, $redScore, $blueScore
+                enabled = true,
+                title = "🏆 CTF Scoreboard updated!",
+                description = "$playerName captured the flag for the **$playerTeam team**\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
+                color = "GREEN",
+                channel = "1280825450901405757"
+            },
+            -- Available placeholders: $playerName, $playerTeam, $lapTime, $totalTeamLaps
+            [2] = {
+                enabled = true,
+                title = "🏆 Team RACE Scoreboard updated!",
+                description = "$playerName completed a lap for the $playerTeam\n- Lap Time: **$lapTime**\n- Total Laps: **$totalTeamLaps**",
+                color = "GREEN",
+                channel = "1280825450901405757"
+            },
+            -- Available placeholders: $playerName, $lapTime, $playerScore
+            [3] = {
+                enabled = true,
+                title = "🏆 FFA RACE Scoreboard updated!",
+                description = "$playerName completed a lap\n- Lap Time: **$lapTime**\n- Total Laps: **$playerScore**",
+                color = "GREEN",
+                channel = "1280825450901405757"
+            },
+            -- Available placeholders: $playerName, $playerTeam, $redScore, $blueScore
+            [4] = {
+                enabled = true,
+                title = "🏆 Team Slayer Scoreboard updated!",
+                description = "$playerName scored for the **$playerTeam team**\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
+                color = "GREEN",
+                channel = "1280825450901405757"
+            },
+            -- Available placeholders: $playerName, $redScore, $blueScore
+            [5] = {
+                enabled = true,
+                title = "🏆 FFA Slayer Scoreboard updated!",
+                description = "$playerName scored\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
+                color = "GREEN",
+                channel = "1280825450901405757"
+            }
         },
         ["OnDeath"] = {
             -- Available placeholders: $killerName, $victimName, $killerID, $victimID
@@ -184,7 +225,7 @@ local config = {
                 channel = "1280825450901405757"
             },
             [3] = {
-                -- vehicle kill
+                -- vehicle kill | todo: BUG FIX -> There's currently no distinction between being run over or being shot at by a vehicle weapon (i.e, chain gun)
                 enabled = true,
                 title = "☠️ Vehicle kill!",
                 description = "$victimName was run over by $killerName",
@@ -269,7 +310,7 @@ local serverData, players = {}, {}
 local date = os.date
 local json = loadfile(config.jsonLibraryPath)()
 
-local ffa, falling, distance, first_blood, map, mode
+local ffa, falling, distance, first_blood, map, mode, game_type
 
 --- Reads the JSON data file and returns the decoded data as a Lua table.
 -- @return Table|nil Decoded JSON data or nil if the file couldn't be read
@@ -316,6 +357,7 @@ function OnScriptLoad()
     register_callback(cb['EVENT_LOGIN'], 'OnLogin')
     register_callback(cb['EVENT_MAP_RESET'], "OnReset")
     register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
+    register_callback(cb['EVENT_SCORE'], 'OnScore')
 
     -- Configure server status settings
     local status = config.STATUS_SETTINGS
@@ -374,12 +416,19 @@ end
 -- @param eventType number The event type
 -- @return Table|nil The event configuration if found, otherwise nil
 local function getDeathConfig(eventName, eventType)
-
     if (eventName ~= "OnDeath") then
         return nil
     end
-
     local eventConfig = config.events["OnDeath"][eventType]
+    return eventConfig.enabled and eventConfig or nil
+end
+
+local function getScoreConfig(eventName, eventType)
+    if (eventName ~= "OnScore") then
+        return nil
+    end
+
+    local eventConfig = config.events["OnScore"][eventType]
     return eventConfig.enabled and eventConfig or nil
 end
 
@@ -392,8 +441,11 @@ local function notify(eventName, args)
     -- Retrieve the event configuration based on the provided event name
     local eventConfig = config.events[eventName]
     local deathConfig = getDeathConfig(eventName, args.eventType)
+    local scoreConfig = getScoreConfig(eventName, args.eventType)
 
-    if (eventName ~= "OnDeath" and not eventConfig.enabled) or (eventName == "OnDeath" and not deathConfig) then
+    if (eventName ~= "OnDeath" and eventName ~= "OnScore" and not eventConfig.enabled)
+            or (eventName == "OnDeath" and not deathConfig)
+            or (eventName == "OnScore" and not scoreConfig) then
         return
     end
 
@@ -410,6 +462,12 @@ local function notify(eventName, args)
         embedDescription = deathConfig.description
         embedColor = deathConfig.color or config.defaultColor
         embedChannel = deathConfig.channel
+        goto next
+    elseif (scoreConfig) then
+        embedTitle = scoreConfig.title
+        embedDescription = scoreConfig.description
+        embedColor = scoreConfig.color or config.defaultColor
+        embedChannel = scoreConfig.channel
         goto next
     end
 
@@ -471,7 +529,7 @@ local function getPlayerList(isQuit, excludeThisPlayer)
         if player_present(i) then
             local player = players[i]
             if player and not exclude(isQuit, i, excludeThisPlayer) then
-                table.insert(playerList, player.name)
+                table.insert(playerList, "- " .. player.name)
             end
         end
     end
@@ -484,7 +542,8 @@ end
 function OnStart(OnScriptLoad)
 
     -- Ensure game type is not 'n/a' before proceeding
-    if get_var(0, '$gt') == 'n/a' then
+    game_type = get_var(0, "$gt")
+    if game_type == 'n/a' then
         return
     end
 
@@ -611,6 +670,7 @@ function OnSpawn(id)
         -- Reset player meta data and send an "OnSpawn" event notification
         players[id].meta = 0
         players[id].switched = nil
+        players[id].lapTime = os.clock()
         notify("OnSpawn", {
             ["$playerName"] = player.name,
             ["$playerID"] = player.id
@@ -804,6 +864,45 @@ function OnChat(id, message, environment)
                 ["$playerID"] = player.id
             })
         end
+    end
+end
+
+local function formatTime(lapTime)
+    local minutes = math.floor(lapTime / 60)
+    local seconds = math.floor(lapTime % 60)
+    local milliseconds = math.floor((lapTime * 1000) % 1000)
+    return string.format("%02d:%02d.%03d", minutes, seconds, milliseconds)
+end
+
+function OnScore(id)
+    local player = players[id]
+    if player then
+
+        local eventType
+
+        if game_type == "ctf" then
+            eventType = 1
+        elseif (game_type == "race") then
+            eventType = not ffa and 2 or 3
+            player.lapTime = formatTime(os.clock() - player.lapTime)
+        elseif (game_type == "slayer") then
+            eventType = not ffa and 4 or 5
+        end
+
+        local score = get_var(id, "$score")
+        local redScore = get_var(0, "$redscore")
+        local blueScore = get_var(0, "$bluescore")
+
+        notify("OnScore", {
+            ["eventType"] = eventType,
+            ["$lapTime"] = player.lapTime or "N/A",
+            ["$totalTeamLaps"] = player.team == "red" and redScore or blueScore,
+            ["$playerScore"] = score,
+            ["$playerName"] = player.name,
+            ["$playerTeam"] = player.team or "FFA",
+            ["$redScore"] = redScore or "N/A",
+            ["$blueScore"] = blueScore or "N/A",
+        })
     end
 end
 
