@@ -379,6 +379,20 @@ local function parseMessageTemplate(String, args)
     return message
 end
 
+--- Retrieves the event configuration for an "OnDeath" event based on the provided event type.
+-- @param eventName String The name of the event
+-- @param eventType number The event type
+-- @return Table|nil The event configuration if found, otherwise nil
+local function getDeathConfig(eventName, eventType)
+
+    if (eventName ~= "OnDeath") then
+        return nil
+    end
+
+    local eventConfig = config.events["OnDeath"][eventType]
+    return eventConfig.enabled and eventConfig or nil
+end
+
 --- Adds a new event notification to the "halo-events.json" database, which will be processed by the Java Bot.
 -- @param eventName String The name of the event
 -- @param args Table The arguments for the event, used to parse message templates
@@ -387,7 +401,9 @@ local function notify(eventName, args)
 
     -- Retrieve the event configuration based on the provided event name
     local eventConfig = config.events[eventName]
-    if (not eventConfig.enabled) then
+    local deathConfig = getDeathConfig(eventName, args.eventType)
+
+    if (eventName ~= "OnDeath" and not eventConfig.enabled) or (eventName == "OnDeath" and not deathConfig) then
         return
     end
 
@@ -399,15 +415,12 @@ local function notify(eventName, args)
 
     -- Check if the event is an "OnDeath" event and update the embed details accordingly
     local embedTitle, embedDescription, embedColor, embedChannel
-    if eventName == "OnDeath" then
-        local deathEvent = config.events["OnDeath"][args.eventType]
-        if deathEvent and deathEvent.enabled then
-            embedTitle = deathEvent.title
-            embedDescription = deathEvent.description
-            embedColor = deathEvent.color or config.defaultColor
-            embedChannel = deathEvent.channel
-            goto next
-        end
+    if deathConfig then
+        embedTitle = deathConfig.title
+        embedDescription = deathConfig.description
+        embedColor = deathConfig.color or config.defaultColor
+        embedChannel = deathConfig.channel
+        goto next
     end
 
     -- Set the embed details based on the event configuration
@@ -422,16 +435,18 @@ local function notify(eventName, args)
     local message = parseMessageTemplate(embedDescription, args)
     embedTitle = parseMessageTemplate(embedTitle, args)
 
-    -- Update the serverData with the new event notification
+    -- Update the JSON data file with the new event notification
     local jsonData = getJSONData()
-    table.insert(serverData.sapp_events, {
+    local serverEvents = jsonData[config.serverID].sapp_events
+
+    table.insert(serverEvents, {
         title = embedTitle,
         description = message,
         color = embedColor,
         channel = embedChannel
     })
 
-    -- Update the JSON data file with the new event notification
+    serverData.sapp_events = serverEvents
     jsonData[config.serverID] = serverData
     updateJSONData(jsonData)
 end
@@ -442,21 +457,30 @@ end
 -- @return number|nil The tag value if found, otherwise nil
 local function getTag(Type, Name)
 
-    -- Look up the tag based on the provided type and name
-    local Tag = lookup_tag(Type, Name)
-
+    -- Look up the tag based on the provided type and name.
     -- Check if a valid tag was found, and if so, return the corresponding value
+    local Tag = lookup_tag(Type, Name)
     return Tag ~= 0 and read_dword(Tag + 0xC) or nil
+end
+
+local function exclude(isQuit, playerToCompare, playerToExclude)
+
+    if (not isQuit) then
+        -- player joined, do not exclude
+        return false
+    end
+
+    return playerToCompare == playerToExclude
 end
 
 --- Retrieves a list of players currently on the server.
 -- @return Table A table containing the names of all players on the server
-local function getPlayerList(excludeThisPlayer)
+local function getPlayerList(isQuit, excludeThisPlayer)
     local playerList = {}
     for i = 1, 16 do
         if player_present(i) then
             local player = players[i]
-            if player and i ~= excludeThisPlayer then
+            if player and not exclude(isQuit, i, excludeThisPlayer) then
                 table.insert(playerList, player.name)
             end
         end
@@ -543,7 +567,7 @@ local function getJoinQuit(player, isQuit)
 
     local totalPlayers = getTotalPlayers(isQuit)
     serverData.status["Total Players"] = totalPlayers
-    serverData.status["Player List"] = getPlayerList(player.id) -- exclude the player who quit (if it's a quit event)
+    serverData.status["Player List"] = getPlayerList(isQuit, player.id) -- exclude the player who quit (if it's a quit event)
 
     -- Return a table containing player information
     return {
@@ -580,7 +604,7 @@ function OnJoin(id, OnScriptLoad)
     if (player and not OnScriptLoad) then
 
         -- Update the total players count and send an "OnJoin" event notification
-        notify("OnJoin", getJoinQuit(player))
+        notify("OnJoin", getJoinQuit(player, false))
     end
 end
 
