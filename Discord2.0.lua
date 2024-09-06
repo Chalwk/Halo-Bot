@@ -225,10 +225,12 @@ local config = {
                 channel = "1280825450901405757"
             },
             [3] = {
-                -- vehicle kill | todo: BUG FIX -> There's currently no distinction between being run over or being shot at by a vehicle weapon (i.e, chain gun)
+                -- vehicle kill (includes being run over or killed by the vehicle's weapon)
+                -- In order to preserve support for custom maps that have custom vehicle tag ids, the script will not check for the vehicle tag id.
+                -- Instead we send a generic message for all vehicle kills.
                 enabled = true,
                 title = "☠️ Vehicle kill!",
-                description = "$victimName was run over by $killerName",
+                description = "$victimName was killed by $killerName",
                 color = "RED",
                 channel = "1280825450901405757"
             },
@@ -265,7 +267,7 @@ local config = {
                 channel = "1280825450901405757"
             },
             [8] = {
-                -- squashed by a vehicle
+                -- squashed by a vehicle (when an unoccupied vehicle collides with you)
                 enabled = true,
                 title = "☠️ Squashed by a vehicle!",
                 description = "$victimName was squashed by a vehicle",
