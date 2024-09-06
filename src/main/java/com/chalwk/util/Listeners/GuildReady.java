@@ -5,6 +5,7 @@ package com.chalwk.util.Listeners;
 
 import com.chalwk.util.EventProcessingTask;
 import com.chalwk.util.FileIO;
+import com.chalwk.util.Logging.Logger;
 import com.chalwk.util.StatusMonitor;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -15,6 +16,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GuildReady extends ListenerAdapter {
 
@@ -28,33 +31,36 @@ public class GuildReady extends ListenerAdapter {
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
-        try {
-            processHaloData(event);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        scheduleHaloDataProcessing(event);
+
+        System.out.println("Connected to " + event.getGuild().getName());
+        System.out.println(logo);
+    }
+
+    private void scheduleHaloDataProcessing(GuildReadyEvent event) {
+        Timer timer = new Timer();
+        TimerTask haloDataTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    processHaloData(event);
+                } catch (IOException e) {
+                    Logger.info("Error processing halo data: " + e.getMessage());
+                }
+            }
+        };
+        timer.scheduleAtFixedRate(haloDataTask, 1000 * 2, 1000 * 3);
     }
 
     private void processHaloData(GuildReadyEvent event) throws IOException {
-
-        System.out.println("====================================================================");
-        System.out.println(logo);
-
         Guild guild = event.getGuild();
         JSONObject parentTable = FileIO.getJSONObjectFromFile("halo-events.json");
-
-        int count = 0;
-
         for (String serverID : parentTable.keySet()) {
             if (!monitoredServers.contains(serverID)) {
                 new StatusMonitor(serverID, 30, guild);
                 new EventProcessingTask(serverID, 1, guild);
                 monitoredServers.add(serverID);
-                count++;
             }
         }
-        String plural = count > 1 ? "s" : "";
-        System.out.println("Monitoring " + count + " Halo server" + plural + " on " + guild.getName());
-        System.out.println("====================================================================");
     }
 }

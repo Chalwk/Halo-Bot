@@ -7,10 +7,6 @@ import com.chalwk.util.Logging.Logger;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.CodeSource;
 
 public class FileIO {
 
@@ -21,16 +17,28 @@ public class FileIO {
     }
 
     private static String getProgramPath() {
-        CodeSource codeSource = FileIO.class.getProtectionDomain().getCodeSource();
-        URL jarFileUrl = codeSource.getLocation();
-        try {
-            URI jarFileUri = jarFileUrl.toURI();
-            File jarFilePath = new File(jarFileUri);
-            return jarFilePath.getParentFile().toString();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Failed to get program path: " + e.getMessage());
+        String currentDirectory = System.getProperty("user.dir");
+        currentDirectory = currentDirectory.replace("\\", "/");
+
+        // This is for when the program is run from the IDE:
+        if (currentDirectory.endsWith("/Halo-Bot")) {
+            return currentDirectory + "/";
         }
+
+        return currentDirectory + "/Halo-Bot/";
     }
+
+    //    private static String getProgramPath() {
+    //        CodeSource codeSource = FileIO.class.getProtectionDomain().getCodeSource();
+    //        URL jarFileUrl = codeSource.getLocation();
+    //        try {
+    //            URI jarFileUri = jarFileUrl.toURI();
+    //            File jarFilePath = new File(jarFileUri);
+    //            return jarFilePath.getParentFile().toString();
+    //        } catch (URISyntaxException e) {
+    //            throw new RuntimeException("Failed to get program path: " + e.getMessage());
+    //        }
+    //    }
 
     private static void checkExists(File file) throws IOException {
         boolean exists = file.exists();
@@ -44,8 +52,7 @@ public class FileIO {
 
     public static String readFile(String fileName) throws IOException {
 
-        File file = new File(getProgramPath() + "\\" + fileName);
-
+        File file = new File(programPath + fileName);
         checkExists(file);
 
         BufferedReader reader = new BufferedReader(new FileReader(file));

@@ -52,8 +52,6 @@ public class EventProcessingTask {
         public void run() {
             try {
 
-                System.out.println("Processing events for server: " + serverID);
-
                 JSONObject parentTable = FileIO.getJSONObjectFromFile(HALO_EVENTS_FILE);
                 JSONArray eventTable = parentTable.getJSONObject(serverID).getJSONArray("sapp_events");
 

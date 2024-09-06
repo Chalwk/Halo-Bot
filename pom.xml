@@ -51,7 +51,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>${basedir}/${project.artifactId}-${project.version}.jar</outputFile>
+                            <!--                            <outputFile>${project.build.directory}/../Halo-Bot/${project.artifactId}-${project.version}.jar</outputFile>-->
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
