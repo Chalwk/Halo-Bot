@@ -3,6 +3,7 @@
 
 package com.chalwk.util;
 
+import com.chalwk.util.Enums.ColorName;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -39,11 +40,18 @@ public class EventProcessingTask {
 
     private static void sendMessage(String title, String description, String colorName, String channelID) {
         TextChannel channel = getTextChannel(channelID);
-        channel.sendMessageEmbeds(new EmbedBuilder()
+
+        Color color = ColorName.fromName(colorName);
+        if (color == null) {
+            System.err.println("[EventProcessingTask -> sendMessage()] Invalid color: " + colorName);
+            return;
+        }
+
+        EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setTitle(title)
                 .setDescription(description)
-                .setColor(Color.getColor(colorName)) // todo: fix this
-                .build()).queue();
+                .setColor(color);
+        channel.sendMessageEmbeds(embedBuilder.build()).queue();
     }
 
     private static class Task extends TimerTask {
