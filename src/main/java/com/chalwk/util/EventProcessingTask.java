@@ -27,7 +27,7 @@ public class EventProcessingTask {
         guild = thisGuild;
         serverID = serverKey;
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new EventProcessingTask.Task(), 1000 * 5, intervalInSeconds * 1000L);
+        timer.scheduleAtFixedRate(new EventProcessingTask.Task(), 0, intervalInSeconds * 1000L);
     }
 
     private static TextChannel getTextChannel(String channelID) {

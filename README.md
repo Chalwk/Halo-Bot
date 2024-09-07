@@ -80,8 +80,9 @@ follow these steps:
   Complete the captcha and click **Authorize**.
   The bot should now be on your Discord server.
 
+## You can now customize the event settings by editing the *Discord.lua* file.
+
 ### Starting the bot:
 
-- Run the **RUN BOT.bat** file.
+- Double-click the **RUN BOT.bat** file.
 - The bot will automatically connect to the Discord API and start listening for events.
-- You can now customize the event settings by editing the *Discord.lua* file.

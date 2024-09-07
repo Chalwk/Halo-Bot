@@ -16,23 +16,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 public class StatusMonitor {
 
-    private static final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private static final String messageIDFile = "message-ids.json";
     private static String serverID;
-
     private static Guild guild;
 
     public StatusMonitor(String serverKey, int intervalInSeconds, Guild thisGuild) {
         guild = thisGuild;
         serverID = serverKey;
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new StatusUpdaterTask(), 1000 * 10, intervalInSeconds * 1000L);
+        timer.scheduleAtFixedRate(new StatusUpdaterTask(), 0, intervalInSeconds * 1000L);
     }
 
     private static EmbedBuilder createEmbedMessage(JSONObject data) {
