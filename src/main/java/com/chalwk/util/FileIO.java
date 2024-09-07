@@ -6,7 +6,13 @@ package com.chalwk.util;
 import com.chalwk.util.Logging.Logger;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileIO {
 
@@ -28,18 +34,6 @@ public class FileIO {
         return currentDirectory + "/Halo-Bot/";
     }
 
-    //    private static String getProgramPath() {
-    //        CodeSource codeSource = FileIO.class.getProtectionDomain().getCodeSource();
-    //        URL jarFileUrl = codeSource.getLocation();
-    //        try {
-    //            URI jarFileUri = jarFileUrl.toURI();
-    //            File jarFilePath = new File(jarFileUri);
-    //            return jarFilePath.getParentFile().toString();
-    //        } catch (URISyntaxException e) {
-    //            throw new RuntimeException("Failed to get program path: " + e.getMessage());
-    //        }
-    //    }
-
     private static void checkExists(File file) throws IOException {
         boolean exists = file.exists();
         if (!exists) {
@@ -51,21 +45,12 @@ public class FileIO {
     }
 
     public static String readFile(String fileName) throws IOException {
+        Path filePath = Paths.get(programPath, fileName);
+        checkExists(filePath.toFile());
 
-        File file = new File(programPath + fileName);
-        checkExists(file);
+        byte[] contentBytes = Files.readAllBytes(filePath);
 
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line = reader.readLine();
-
-        StringBuilder content = new StringBuilder();
-        while (line != null) {
-            content.append(line);
-            line = reader.readLine();
-        }
-        reader.close();
-
-        return content.toString();
+        return new String(contentBytes, StandardCharsets.UTF_8);
     }
 
     public static void saveJSONObjectToFile(JSONObject jsonObject, String fileName) {
