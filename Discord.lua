@@ -214,7 +214,7 @@ local config = {
             [2] = {
                 enabled = true,
                 title = "🏆 Team RACE Scoreboard updated!",
-                description = "$playerName completed a lap for the $playerTeam\n- Lap Time: **$lapTime**\n- Total Laps: **$totalTeamLaps**",
+                description = "$playerName completed a lap for the $playerTeam team\n- Lap Time: **$lapTime**\n- Total Laps: **$totalTeamLaps**",
                 color = "GREEN",
                 channel = "xxxxxxxxxxxxxxxxxxx"
             },
