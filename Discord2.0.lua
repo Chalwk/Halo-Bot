@@ -1,58 +1,70 @@
 --[[
-/* Copyright (c) 2024 Jericho Crosby <jericho.crosby227@gmail.com>. Licensed under GNU General Public License v3.0.
-See the LICENSE file or visit https://www.gnu.org/licenses/gpl-3.0.en.html for details. */
 
-Script Name: Discord, for SAPP (PC & CE)
+   Copyright (c) 2024 Jericho Crosby <jericho.crosby227@gmail.com>. Licensed under GNU General Public License v3.0.
+   See the LICENSE file or visit https://www.gnu.org/licenses/gpl-3.0.en.html for details.
 
 Description:
-This script sends customizable sapp event notifications to the Halo Discord Bot, which then displays them in a designated Discord channel.
-Users can configure the script to send notifications for various events such as player joins, leaves, deaths, commands, chat messages, etc.
-All event notifications are sent as customizable embed messages, allowing users to edit the title, description, color, and designated channel according to their preferences.
+    This script serves as a custom bridge between Halo 1 (PC/CE) and Discord, enhancing the gaming experience by
+    keeping your Discord community up-to-date with in-game events. It sends customizable event notifications to
+    Discord channels, making it easy for server members to stay informed about what's happening in the game.
 
 Events:
+    EVENT                   | TRIGGERED WHEN:
+    :---------------------- | :----------------
+    event_chat              | A player sends a chat message
+    event_command           | A player executes a command
+    event_game_start        | A new game starts
+    event_game_end          | A game ends
+    event_join              | A player joins the server
+    event_leave             | A player leaves the server
+    event_die               | A player dies
+    event_snap              | A player snaps
+    event_spawn             | A player spawns
+    event_login             | A player logs in
+    event_team_switch       | A player switches teams
+    event_score             | A player scores
+    script_load             | This script is loaded
+    script_unload           | This script is unloaded
+    event_map_reset         | The map is reset
 
-  EVENT:                    TRIGGERED WHEN:
-- event_chat                A player sends a chat message
-- event_command             A player executes a command
-- event_game_start          A new game starts
-- event_game_end            A game ends
-- event_join                A player joins the server
-- event_leave               A player leaves the server
-- event_die                 A player dies
-- event_snap                A player snaps
-- event_spawn               A player spawns
-- event_login               A player logs in
-- event_team_switch         A player switches teams
-- event_score               A player scores
-- script_load               This script is loaded
-- script_unload             This script is unloaded
-- event_map_reset           The map is reset
+Key Features:
+    * Real-time notifications for various in-game events
+    * Customizable embed messages, including title, description, color, and designated channel
+	* Enable/disable specific events
 ]]--
 
 local config = {
 
     -- General settings:
 
-    -- The server ID (unique identifier)
-    -- This is used to store data for multiple servers in a single JSON file.
-    -- Make sure to change this value (ane keep them unique) if you are running multiple servers.
+    -- Unique identifier for the server
+    -- Used to store data for multiple servers in a single JSON file.
+    -- Must be changed and kept unique if you are running multiple servers.
     serverID = "server_1",
 
-    -- Default embed message color
+    -- Default color for embed messages
+    -- Available colors: "GREEN", "BLUE", "RED", "YELLOW", etc.
     defaultColor = "GREEN",
 
-    -- The timestamp format
+    -- Format for displaying timestamps in messages
+    -- Formatting options are similar to the C library function `strftime()`
     timeStampFormat = "%A %d %B %Y - %X",
 
-    -- Status settings
-    -- These settings are used to update the server status message in Discord.
+    -- Status settings:
+    -- These settings control how the bot updates the server status message in Discord.
     STATUS_SETTINGS = {
-        -- The channel ID where the bot will update an embed status message (e.g., server name, IP, map, mode, total players)
+        -- The channel ID where the bot will update the server status message
+        -- This message includes details such as server name, IP, map, mode, and total players
         channelID = "1280825407255347200",
-        -- The server name
+
+        -- The name of the server to be displayed in the status message
         serverName = "LNZ DEV SERVER",
-        -- The server IP
+
+        -- The IP address and port of the server to be displayed in the status message
         serverIP = "127.0.0.1:2310"
+
+        -- At the moment, other data is included in the status message by default and cannot be customized (e.g., map, mode, total players).
+        -- This will change in future updates.
     },
 
     --------------------------------
