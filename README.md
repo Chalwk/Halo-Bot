@@ -48,12 +48,12 @@ Discord channels, making it easy for server members to stay informed about what'
 - For Windows users, you can download [Java 17 here](https://www.oracle.com/java/technologies/downloads/#jdk17-windows).
 - For Linux users, run this command in your terminal: `sudo apt install openjdk-17-jre-headless`
 - You will need a file decompression tool like [WinRAR](https://www.win-rar.com/start.html?&L=0)
-  or [7-zip](https://www.7-zip.org/download.html) to extract **Halo Bot.zip**.
+  or [7-zip](https://www.7-zip.org/download.html) to extract **Halo-Bot.zip**.
 
 ## Installation steps:
 
 - Place the **Discord.lua** script in the server *Lua folder*.
-- Place the **Halo Bot** folder in the server root directory (the same location as *sapp.dll* & *strings.dll*).
+- Place the **Halo-Bot** folder in the server root directory (the same location as *sapp.dll* & *strings.dll*).
 
 Once you have copied the necessary files to the server, follow these steps:
 
@@ -69,7 +69,7 @@ follow these steps:
 - Click the **Bot** tab on the left-hand side menu.
   Set the bot's username and profile picture.
 - Click **Reset Token** and then **Yes, do it!**.
-- Copy and paste the token into the *./Halo Bot/auth.token* file. Never share this token with anyone.
+- Copy and paste the token into the *./Halo-Bot/auth.token* file. Never share this token with anyone.
 - On the same page, scroll down to **Privileged Gateway Intents**.
 - Enable **Presence Intent**, **Server Members Intent** and **Message Content Intent**.
 - Click the **OAuth2** tab on the left-hand side menu.
@@ -84,6 +84,6 @@ follow these steps:
 
 ### Starting the bot:
 
-- Run the **HaloBot-1.0.0.jar** file.
+- Run the **RUN BOT.bat** file.
 - The bot will automatically connect to the Discord API and start listening for events.
 - You can now customize the event settings by editing the *Discord.lua* file.
