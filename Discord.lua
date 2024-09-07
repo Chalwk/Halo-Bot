@@ -466,7 +466,7 @@ end
 -- @return Table|nil The event configuration if found, otherwise nil
 local function getEventConfig(eventName, eventType)
     local event = config.events[eventName]
-    local altEvent = eventName == "OnDeath" or eventName == "OnScore" and event[eventType]
+    local altEvent = (eventName == "OnDeath" or eventName == "OnScore") and (event[eventType] or nil)
 
     if altEvent then
         return altEvent and altEvent.enabled and altEvent or nil
