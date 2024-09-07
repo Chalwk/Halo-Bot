@@ -31,6 +31,15 @@ Key Features:
     * Real-time notifications for various in-game events
     * Customizable embed messages, including title, description, color, and designated channel
 	* Enable/disable specific events
+
+Coming in future updates:
+    * Two-way text communication between Discord and Halo (chat relay).
+        This feature will allow players to send messages from Discord to the game and vice versa.
+        Currently, only game events are sent to Discord.
+    * Support to execute SAPP commands from Discord.
+        This feature will allow server admins to execute SAPP commands from Discord.
+    * Support for custom event notifications.
+        This feature will allow server admins to create custom event notifications for specific events.
 ]]--
 
 local config = {

@@ -1,33 +1,46 @@
-# Halo-Bot
+# Description:
 
-The Halo Bot is a custom bridge between Halo 1 (PC/CE) and Discord, designed to enhance the gaming experience by keeping
-your Discord community up-to-date with in-game events. This bot sends customizable event notifications to Discord
-channels, making it easy for your server members to stay informed about what's happening in the game.
+This bot serves as a custom bridge between Halo 1 (PC/CE) and Discord, enhancing the gaming experience by
+keeping your Discord community up-to-date with in-game events. It sends customizable event notifications to
+Discord channels, making it easy for server members to stay informed about what's happening in the game.
 
-## Features
+### Events:
 
-Real-time notifications for various in-game events:
+| EVENT             | DESCRIPTION                   |
+|-------------------|-------------------------------|
+| event_chat        | A player sends a chat message |
+| event_command     | A player executes a command   |
+| event_game_start  | A new game starts             |
+| event_game_end    | A game ends                   |
+| event_join        | A player joins the server     |
+| event_leave       | A player leaves the server    |
+| event_die         | A player dies                 |
+| event_snap        | A player snaps                |
+| event_spawn       | A player spawns               |
+| event_login       | A player logs in              |
+| event_team_switch | A player switches teams       |
+| event_score       | A player scores               |
+| script_load       | This script is loaded         |
+| script_unload     | This script is unloaded       |
+| event_map_reset   | The map is reset              |
 
-- Player joins/leaves the server
-- Player sends a chat message
-- Player executes a command
-- Player dies
-- Player snaps
-- Player spawns
-- Player logs in
-- Player switches teams
-- Player scores
-- Game starts/ends
-- Map resets
+### Key Features:
 
-Customizable event notifications:
+* Real-time notifications for various in-game events
+* Customizable embed messages, including title, description, color, and designated channel
+* Enable/disable specific events
 
-- Enable/disable specific events
-- Customize the message format for each event
-- Customize the channel where each event is sent
-- Customize the color of the embed message for each event
+#### Coming in future updates:
 
-## Installation
+* Two-way text communication between Discord and Halo (chat relay).
+  > This feature will allow players to send messages from Discord to the game and vice versa.
+  Currently, only game events are sent to Discord.
+* Support to execute SAPP commands from Discord.
+  > This feature will allow server admins to execute SAPP commands from Discord.
+* Support for custom event notifications.
+  > This feature will allow server admins to create custom event notifications for specific events.
+
+# Installation
 
 ### Prerequisites:
 
@@ -37,7 +50,7 @@ Customizable event notifications:
 - You will need a file decompression tool like [WinRAR](https://www.win-rar.com/start.html?&L=0)
   or [7-zip](https://www.7-zip.org/download.html) to extract **Halo Bot.zip**.
 
-### Installation steps:
+## Installation steps:
 
 - Place the **Discord.lua** script in the server *Lua folder*.
 - Place the **Halo Bot** folder in the server root directory (the same location as *sapp.dll* & *strings.dll*).
@@ -45,10 +58,8 @@ Customizable event notifications:
 Once you have copied the necessary files to the server, follow these steps:
 
 - Register an application on the [Discord Developer Portal](https://discord.com/developers/applications) and obtain a *
-  *bot token**.
-
-> A Discord bot token is a short phrase (represented as a jumble of letters and numbers) that acts as a key to
-> controlling a Bot. It is used to authenticate the Bot and establish a connection to the Discord API.
+  *bot token**. A Discord bot token is a short phrase (represented as a jumble of letters and numbers) that acts as a
+  key to controlling a Bot. It is used to authenticate the Bot and establish a connection to the Discord API.
 
 There are many tutorials online to help you learn how to create a Discord Application, however, as a general guide,
 follow these steps:
