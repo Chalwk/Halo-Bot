@@ -4,6 +4,8 @@
 package com.chalwk.util.Enums;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum ColorName {
     RED("RED", Color.RED),
@@ -23,22 +25,22 @@ public enum ColorName {
     private final String name;
     private final Color color;
 
+    private static final Map<String, ColorName> colorMap = new HashMap<>();
+
     ColorName(String name, Color color) {
         this.name = name;
         this.color = color;
     }
 
-    public static Color fromName(String name) {
+    static {
         for (ColorName colorName : ColorName.values()) {
-            if (colorName.getName().equalsIgnoreCase(name)) {
-                return colorName.getColor();
-            }
+            colorMap.put(colorName.name.toLowerCase(), colorName);
         }
-        return null;
     }
 
-    public String getName() {
-        return name;
+    public static Color fromName(String name) {
+        ColorName colorName = colorMap.get(name.toLowerCase());
+        return colorName == null ? null : colorName.getColor();
     }
 
     public Color getColor() {
