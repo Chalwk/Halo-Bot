@@ -59,6 +59,9 @@ local config = {
     -- End of general settings --
     --------------------------------
 
+    -- Available colors for embed messages:
+    -- RED, BLUE, GREEN, YELLOW, ORANGE, CYAN, MAGENTA, PINK, WHITE, BLACK, GRAY, DARK_GRAY, LIGHT_GRAY
+
     -- Event-specific settings:
     events = {
         ["OnStart"] = {
@@ -320,6 +323,7 @@ local _insert = table.insert
 local _floor = math.floor
 local _format = string.format
 local json = loadfile(jsonLibraryPath)()
+
 local ffa, falling, distance, first_blood, map, mode, game_type
 
 --- Reads the JSON data file and returns the decoded data as a Lua table.
@@ -399,6 +403,8 @@ end
 -- @param isQuit Boolean Indicates if a player has quit
 -- @return number Total number of players
 local function getTotalPlayers(isQuit)
+
+    -- Retrieve the current number of players on the server and adjust total players count if a player has quit.
     local total = _tonumber(get_var(0, "$pn"))
     return (isQuit and total - 1 or total)
 end
@@ -431,10 +437,6 @@ local function getDeathConfig(eventName, eventType)
     return eventConfig.enabled and eventConfig or nil
 end
 
---- Retrieves the event configuration for an "OnScore" event based on the provided event type.
--- @param eventName String The name of the event
--- @param eventType number The event type
--- @return Table|nil The event configuration if found, otherwise nil
 local function getScoreConfig(eventName, eventType)
     if (eventName ~= "OnScore") then
         return nil

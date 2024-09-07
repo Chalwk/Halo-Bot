@@ -1,20 +1,13 @@
 {
   "server_1": {
-    "sapp_events": [
-      {
-        "channel": "1281860347208138752",
-        "color": "GREEN",
-        "description": "- Map: [**bloodgulch**]\n- [**Team Race**] (**Team Play**)\n- Players: **0**",
-        "title": "🌄 A new game has started!"
-      }
-    ],
+    "sapp_events": [],
     "status": {
-      "CHANNEL_ID": "1280825407255347200",
-      "Map": "bloodgulch",
-      "Mode": "Team Race",
-      "Player List": [],
-      "Server IP": "127.0.0.1:2310",
       "Server Name": "LNZ DEV SERVER",
+      "CHANNEL_ID": "1280825407255347200",
+      "Mode": "Team Race",
+      "Server IP": "127.0.0.1:2310",
+      "Player List": [],
+      "Map": "bloodgulch",
       "Total Players": 0
     }
   }
