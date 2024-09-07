@@ -62,15 +62,19 @@ local config = {
     -- Status settings:
     -- These settings control how the bot updates the server status message in Discord.
     STATUS_SETTINGS = {
-        -- The channel ID where the bot will update the server status message
-        -- This message includes details such as server name, IP, map, mode, and total players
-        channelID = "1280825407255347200",
+        -- The channel ID where the bot will update the server status message.
+        -- This message includes details such as server name, IP, map, mode, and total players.
+        channelID = "xxxxxxxxxxxxxxxxxxxxxxxx",
 
-        -- The name of the server to be displayed in the status message
-        serverName = "LNZ DEV SERVER",
+        -- The interval (in seconds) at which the bot will update the server status message.
+        -- Set to 0 to disable automatic status updates.
+        statusCheckInterval = 30,
 
-        -- The IP address and port of the server to be displayed in the status message
-        serverIP = "127.0.0.1:2310"
+        -- The name of the server to be displayed in the status message.
+        serverName = "YOUR_SERVER_NAME_HERE",
+
+        -- The IP address and port of the server to be displayed in the status message.
+        serverIP = "xxx.xxx.xxx.xxx:xxxx"
 
         -- At the moment, other data is included in the status message by default and cannot be customized (e.g., map, mode, total players).
         -- This will change in future updates.
@@ -80,8 +84,19 @@ local config = {
     -- End of general settings --
     --------------------------------
 
+    -- Interval (in seconds) at which the bot will check for new Halo events.
+    -- Set to 0 to disable automatic event notifications.
+    eventCheckInterval = 1,
+
     -- Available colors for embed messages:
     -- RED, BLUE, GREEN, YELLOW, ORANGE, CYAN, MAGENTA, PINK, WHITE, BLACK, GRAY, DARK_GRAY, LIGHT_GRAY
+
+    -- Embed format:
+    -- enabled (boolean): Whether the event notification is enabled
+    -- title (string): The title of the embed message
+    -- description (string): The description of the embed message
+    -- color (string): The color of the embed message
+    -- channel (string): The channel ID where the embed message will be sent
 
     -- Event-specific settings:
     events = {
@@ -91,7 +106,7 @@ local config = {
             title = "🌄 A new game has started!",
             description = "- Map: [**$map**]\n- [**$mode**] (**$faa**)\n- Players: **$totalPlayers**",
             color = "GREEN",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnEnd"] = {
             -- Available placeholders: $map, $mode, $totalPlayers, $faa
@@ -99,7 +114,7 @@ local config = {
             title = "🌅 The game has ended!",
             description = "The game ended with **$totalPlayers** players.",
             color = "RED",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnJoin"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers, $playerID
@@ -107,7 +122,7 @@ local config = {
             title = "🟢 $playerName has joined the server!",
             description = "",
             color = "GREEN",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnQuit:
         ["OnQuit"] = {
@@ -116,7 +131,7 @@ local config = {
             title = "🔴 $playerName has left the server!",
             description = "",
             color = "RED",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnSpawn"] = {
             -- Available placeholders: $playerName, $playerID
@@ -124,7 +139,7 @@ local config = {
             title = "🐣 $playerName has spawned!",
             description = "",
             color = "YELLOW",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnSwitch:
         ["OnSwitch"] = {
@@ -133,7 +148,7 @@ local config = {
             title = "👥 Player has switched teams!",
             description = "**$playerName** switched teams. New team: **[$team]**",
             color = "YELLOW",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnWarp:
         ["OnWarp"] = {
@@ -142,7 +157,7 @@ local config = {
             title = "𒅒 $playerName is warping...",
             description = "",
             color = "YELLOW",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnReset"] = {
             -- Available placeholders: $map, $mode
@@ -150,7 +165,7 @@ local config = {
             title = "🔄 The map has been reset!",
             description = "- **$map**\n- **$mode**",
             color = "YELLOW",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnLogin"] = {
             -- Available placeholders: $playerName, $playerID
@@ -158,7 +173,7 @@ local config = {
             title = "👤 $playerName has logged in!",
             description = "",
             color = "YELLOW",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnSnap"] = {
             -- Available placeholders: $playerName, $playerID
@@ -166,7 +181,7 @@ local config = {
             title = "⊹ $playerName snapped!",
             description = "",
             color = "YELLOW",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnCommand"] = {
             -- Available placeholders: $type, $name, $id, $command, $playerID
@@ -174,7 +189,7 @@ local config = {
             title = "⌘ Command executed!",
             description = "[**$type**] **$playerName** (**$id**): *$command*",
             color = "RED",
-            channel = "1281511866761351189"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnChat"] = {
             -- Available placeholders: $type, $playerName, $id, $message, $playerID
@@ -182,7 +197,7 @@ local config = {
             title = "🗨️ Chat message sent!",
             description = "[**$type**] **$playerName** (**$id**): *$message*",
             color = "BLUE",
-            channel = "1281860347208138752"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnScore"] = {
             [1] = {
@@ -191,7 +206,7 @@ local config = {
                 title = "🏆 CTF Scoreboard updated!",
                 description = "$playerName captured the flag for the **$playerTeam team**\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $playerTeam, $lapTime, $totalTeamLaps
             [2] = {
@@ -199,7 +214,7 @@ local config = {
                 title = "🏆 Team RACE Scoreboard updated!",
                 description = "$playerName completed a lap for the $playerTeam\n- Lap Time: **$lapTime**\n- Total Laps: **$totalTeamLaps**",
                 color = "GREEN",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $lapTime, $playerScore
             [3] = {
@@ -207,7 +222,7 @@ local config = {
                 title = "🏆 FFA RACE Scoreboard updated!",
                 description = "$playerName completed a lap\n- Lap Time: **$lapTime**\n- Total Laps: **$playerScore**",
                 color = "GREEN",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $playerTeam, $redScore, $blueScore
             [4] = {
@@ -215,7 +230,7 @@ local config = {
                 title = "🏆 Team Slayer Scoreboard updated!",
                 description = "$playerName scored for the **$playerTeam team**\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $redScore, $blueScore
             [5] = {
@@ -223,7 +238,7 @@ local config = {
                 title = "🏆 FFA Slayer Scoreboard updated!",
                 description = "$playerName scored\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             }
         },
         ["OnDeath"] = {
@@ -234,7 +249,7 @@ local config = {
                 title = "☠️ $killerName drew first blood!",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [2] = {
                 -- killed from the grave
@@ -242,7 +257,7 @@ local config = {
                 title = "☠️ $victimName was killed from the grave by $killerName",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [3] = {
                 -- vehicle kill (includes being run over or killed by the vehicle's weapon)
@@ -252,7 +267,7 @@ local config = {
                 title = "☠️ $victimName was killed by $killerName",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [4] = {
                 -- pvp
@@ -260,7 +275,7 @@ local config = {
                 title = "☠️ $victimName was killed by $killerName",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [5] = {
                 -- guardians
@@ -268,7 +283,7 @@ local config = {
                 title = "☠️ $victimName was killed by the guardians",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [6] = {
                 -- suicide
@@ -276,7 +291,7 @@ local config = {
                 title = "☠️ $victimName committed suicide!",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [7] = {
                 -- betrayal
@@ -284,7 +299,7 @@ local config = {
                 title = "☠️ $victimName was betrayed by $killerName!",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [8] = {
                 -- squashed by a vehicle (when an unoccupied vehicle collides with you)
@@ -292,7 +307,7 @@ local config = {
                 title = "☠️ $victimName was squashed by a vehicle",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [9] = {
                 -- fall damage
@@ -300,7 +315,7 @@ local config = {
                 title = "☠️ $victimName fell and broke their leg",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [10] = {
                 -- killed by the server
@@ -308,7 +323,7 @@ local config = {
                 title = "☠️ $victimName was killed by the server",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [11] = {
                 -- unknown death
@@ -316,7 +331,7 @@ local config = {
                 title = "☠️ $victimName died",
                 description = "",
                 color = "RED",
-                channel = "1281860347208138752"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxx"
             }
         }
     }
@@ -400,6 +415,8 @@ function OnScriptLoad()
     -- Initialize serverData and status
     serverData = {
         sapp_events = {},
+        eventCheckInterval = config.eventCheckInterval,
+        statusCheckInterval = status.statusCheckInterval,
         status = {
             ["CHANNEL_ID"] = status["channelID"],
             ["Server Name"] = status["serverName"],

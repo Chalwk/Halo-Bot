@@ -57,8 +57,17 @@ public class GuildReady extends ListenerAdapter {
         JSONObject parentTable = FileIO.getJSONObjectFromFile("halo-events.json");
         for (String serverID : parentTable.keySet()) {
             if (!monitoredServers.contains(serverID)) {
-                new StatusMonitor(serverID, 30, guild);
-                new EventProcessingTask(serverID, 1, guild);
+
+                int statusInterval = parentTable.getJSONObject(serverID).getInt("statusCheckInterval");
+                int eventsInterval = parentTable.getJSONObject(serverID).getInt("eventCheckInterval");
+
+                if (statusInterval > 0) {
+                    new StatusMonitor(serverID, statusInterval, guild);
+                }
+                if (eventsInterval > 0) {
+                    new EventProcessingTask(serverID, eventsInterval, guild);
+                }
+
                 monitoredServers.add(serverID);
             }
         }
