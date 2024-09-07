@@ -57,12 +57,7 @@ Discord channels, making it easy for server members to stay informed about what'
 
 Once you have copied the necessary files to the server, follow these steps:
 
-- Register an application on the [Discord Developer Portal](https://discord.com/developers/applications) and obtain a *
-  *bot token**.
-
-> A Discord bot token is a short phrase (represented as a jumble of letters and numbers) that acts as a key to
-> controlling a Bot.
-> It is used to authenticate the Bot and establish a connection to the Discord API.
+- Register an application on the [Discord Developer Portal](https://discord.com/developers/applications).
 
 There are many tutorials online to help you learn how to create a Discord Application, however, as a general guide,
 follow these steps:
