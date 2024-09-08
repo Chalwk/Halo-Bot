@@ -11,7 +11,7 @@
             {
                 "inline": false,
                 "name": "🏷️ Server Name",
-                "value": "LNZ DEV SERVER"
+                "value": "- **LNZ DEV SERVER**"
             },
             {
                 "inline": false,
@@ -21,22 +21,22 @@
             {
                 "inline": false,
                 "name": "🗺️ Map",
-                "value": "bloodgulch"
+                "value": "- **bloodgulch**"
             },
             {
                 "inline": false,
                 "name": "⚙️ Mode",
-                "value": "Team Race - Team Play"
+                "value": "- **Team Race** | *Team Play*"
             },
             {
                 "inline": false,
                 "name": "👥 Total Players",
-                "value": 0
+                "value": "- **1**"
             },
             {
                 "inline": false,
                 "name": "👤 Player List",
-                "value": "No players online"
+                "value": "- **Chalwk**  | Team: **Red** | Laps: **0**\n  - | Kills: **0** | Deaths: **0**\n  - | K/D: **0.00**"
             }
         ],
         "title": "🌐 Server Status"
