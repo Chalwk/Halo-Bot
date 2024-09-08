@@ -1,0 +1,16 @@
+{
+  "server_1": {
+    "statusCheckInterval": 30,
+    "sapp_events": [],
+    "eventCheckInterval": 1,
+    "status": {
+      "Server Name": "YOUR_SERVER_NAME_HERE",
+      "CHANNEL_ID": "1280825407255347200",
+      "Mode": "Team Race",
+      "Server IP": "xxx.xxx.xxx.xxx:xxxx",
+      "Player List": [],
+      "Map": "bloodgulch",
+      "Total Players": 0
+    }
+  }
+}

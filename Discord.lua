@@ -466,13 +466,12 @@ end
 -- @return Table|nil The event configuration if found, otherwise nil
 local function getEventConfig(eventName, eventType)
     local event = config.events[eventName]
-    local altEvent = (eventName == "OnDeath" or eventName == "OnScore") and (event[eventType] or nil)
+    local altEvent
 
-    if altEvent then
-        return altEvent and altEvent.enabled and altEvent or nil
+    if eventName == "OnDeath" or eventName == "OnScore" then
+        altEvent = event[eventType]
     end
-
-    return event and event.enabled and event or nil
+    return altEvent and altEvent.enabled and altEvent or (event and event.enabled and event) or nil
 end
 
 --- Sends an event notification to Discord based on the provided event name and arguments.
