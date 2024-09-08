@@ -40,7 +40,7 @@ public enum ColorName {
 
     public static Color fromName(String name) {
         ColorName colorName = colorMap.get(name.toLowerCase());
-        return colorName == null ? null : colorName.getColor();
+        return colorName == null ? Color.GRAY : colorName.getColor();
     }
 
     public Color getColor() {

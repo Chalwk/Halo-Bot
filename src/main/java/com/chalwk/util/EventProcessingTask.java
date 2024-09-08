@@ -19,18 +19,12 @@ import java.util.TimerTask;
 
 public class EventProcessingTask {
 
-    private static final String HALO_EVENTS_FILE = "halo-events.json";
-    private static String serverID;
-    private static Guild guild;
-
-    public EventProcessingTask(String serverKey, int intervalInSeconds, Guild thisGuild) {
-        guild = thisGuild;
-        serverID = serverKey;
+    public EventProcessingTask(String serverID, int intervalInSeconds, Guild guild) {
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new EventProcessingTask.Task(), 0, intervalInSeconds * 1000L);
+        timer.scheduleAtFixedRate(new Task(guild, serverID), 0, intervalInSeconds * 1000L);
     }
 
-    private static TextChannel getTextChannel(String channelID) {
+    private static TextChannel getTextChannel(String channelID, Guild guild) {
         TextChannel channel = guild.getTextChannelById(channelID);
         if (channel == null) {
             throw new IllegalArgumentException("[EventProcessing Task] Channel not found: " + channelID);
@@ -38,15 +32,10 @@ public class EventProcessingTask {
         return channel;
     }
 
-    private static void sendMessage(String title, String description, String colorName, String channelID) {
-        TextChannel channel = getTextChannel(channelID);
+    private static void sendMessage(String title, String description, String colorName, String channelID, Guild guild) {
+        TextChannel channel = getTextChannel(channelID, guild);
 
         Color color = ColorName.fromName(colorName);
-        if (color == null) {
-            System.err.println("[EventProcessingTask -> sendMessage()] Invalid color: " + colorName);
-            return;
-        }
-
         EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setTitle(title)
                 .setDescription(description)
@@ -55,6 +44,16 @@ public class EventProcessingTask {
     }
 
     private static class Task extends TimerTask {
+
+        private static final String HALO_EVENTS_FILE = "halo-events.json";
+
+        private final Guild guild;
+        private final String serverID;
+
+        public Task(Guild guild, String serverID) {
+            this.guild = guild;
+            this.serverID = serverID;
+        }
 
         @Override
         public void run() {
@@ -66,7 +65,7 @@ public class EventProcessingTask {
                 for (Iterator<Object> it = eventTable.iterator(); it.hasNext(); ) {
                     JSONObject event = (JSONObject) it.next();
                     EmbedData result = getGetServerData(event);
-                    sendMessage(result.title(), result.description(), result.color(), result.channelID());
+                    sendMessage(result.title(), result.description(), result.color(), result.channelID(), guild);
                     it.remove();
                 }
                 FileIO.saveJSONObjectToFile(parentTable, HALO_EVENTS_FILE);

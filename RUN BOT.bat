@@ -1,5 +1,5 @@
 @echo off
-set JAR_FILE_NAME=HaloBot-1.0.0.jar
+set JAR_FILE_NAME=HaloBot-1.1.0.jar
 color 0A
 echo Halo Discord Bot version: 1.0.0
 echo Running bot...

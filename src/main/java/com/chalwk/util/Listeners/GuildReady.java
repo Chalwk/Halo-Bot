@@ -55,15 +55,18 @@ public class GuildReady extends ListenerAdapter {
     private void processHaloData(GuildReadyEvent event) throws IOException {
         Guild guild = event.getGuild();
         JSONObject parentTable = FileIO.getJSONObjectFromFile("halo-events.json");
+
         for (String serverID : parentTable.keySet()) {
             if (!monitoredServers.contains(serverID)) {
 
-                int statusInterval = parentTable.getJSONObject(serverID).getInt("statusCheckInterval");
-                int eventsInterval = parentTable.getJSONObject(serverID).getInt("eventCheckInterval");
+                JSONObject serverData = parentTable.getJSONObject(serverID);
+                int statusInterval = serverData.getInt("statusCheckInterval");
+                int eventsInterval = serverData.getInt("eventCheckInterval");
 
                 if (statusInterval > 0) {
                     new StatusMonitor(serverID, statusInterval, guild);
                 }
+
                 if (eventsInterval > 0) {
                     new EventProcessingTask(serverID, eventsInterval, guild);
                 }

@@ -1,16 +1,53 @@
 {
   "server_1": {
-    "statusCheckInterval": 30,
-    "sapp_events": [],
     "eventCheckInterval": 1,
+    "sapp_events": [
+      {
+        "channel": "1281860347208138752",
+        "color": "GREEN",
+        "description": "- Map: [**bloodgulch**]\n- [**Team Race**] (**Team Play**)\n- Players: **0**",
+        "title": "🌄 A new game has started!"
+      }
+    ],
     "status": {
-      "Server Name": "YOUR_SERVER_NAME_HERE",
-      "CHANNEL_ID": "1280825407255347200",
-      "Mode": "Team Race",
-      "Server IP": "xxx.xxx.xxx.xxx:xxxx",
-      "Player List": [],
-      "Map": "bloodgulch",
-      "Total Players": 0
-    }
+      "channel": "1280825407255347200",
+      "color": "BLUE",
+      "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
+      "fields": [
+        {
+          "inline": false,
+          "name": "🏷️ Server Name",
+          "value": "LNZ DEV SERVER"
+        },
+        {
+          "inline": false,
+          "name": "📍 Server IP",
+          "value": "FILL THIS IN MANUALLY"
+        },
+        {
+          "inline": true,
+          "name": "🗺️ Map",
+          "value": "bloodgulch"
+        },
+        {
+          "inline": true,
+          "name": "⚙️ Mode",
+          "value": "Team Race - Team Play"
+        },
+        {
+          "inline": true,
+          "name": "👥 Total Players",
+          "value": 0
+        },
+        {
+          "inline": false,
+          "name": "👤 Player List",
+          "value": []
+        }
+      ],
+      "footer": "Last updated dd-MM-yyy | HH:mm:ss",
+      "title": "🌐 Server Status"
+    },
+    "statusCheckInterval": 30
   }
 }

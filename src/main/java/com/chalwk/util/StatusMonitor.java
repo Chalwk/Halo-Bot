@@ -3,135 +3,102 @@
 
 package com.chalwk.util;
 
-import com.chalwk.util.Enums.StatusField;
+import com.chalwk.util.Enums.ColorName;
+import com.chalwk.util.Logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.stream.Collectors;
+
+import static com.chalwk.util.Helpers.*;
+import static com.chalwk.util.StatusInfo.getStatus;
 
 public class StatusMonitor {
 
-    private static final String messageIDFile = "message-ids.json";
-    private static String serverID;
-    private static Guild guild;
-
-    public StatusMonitor(String serverKey, int intervalInSeconds, Guild thisGuild) {
-        guild = thisGuild;
-        serverID = serverKey;
+    public StatusMonitor(String serverID, int intervalInSeconds, Guild guild) {
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new StatusUpdaterTask(), 0, intervalInSeconds * 1000L);
+        timer.scheduleAtFixedRate(new Task(guild, serverID), 0, intervalInSeconds * 1000L);
     }
 
     private static EmbedBuilder createEmbedMessage(JSONObject data) {
+
+        String title = data.optString("title", "N/A");
+        String description = data.optString("description", "N/A");
+        String colorName = data.optString("color", "0x00FF00");
+
+        Color color = ColorName.fromName(colorName);
+        String timestamp = getTimestamp();
+
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Server Status");
+        embed.setTitle(title)
+                .setDescription(description)
+                .setColor(color)
+                .setFooter("Last updated: " + timestamp, null);
 
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy | HH:mm:ss");
-        String timestamp = now.format(formatter);
-        embed.setFooter("Last updated: " + timestamp, null);
-        embed.setColor(0x00FF00); // green
-
-        for (StatusField field : StatusField.values()) {
-            embed.addField(field.getFieldName(), getFieldValue(data, field), false);
+        JSONArray fields = data.optJSONArray("fields");
+        if (fields != null) {
+            for (Object fieldObj : fields) {
+                JSONObject field = (JSONObject) fieldObj;
+                String fieldName = field.optString("name", "N/A");
+                String fieldValue = field.optString("value", "N/A");
+                boolean inline = field.optBoolean("inline", false);
+                embed.addField(fieldName, fieldValue, inline);
+            }
         }
 
         return embed;
     }
 
-    private static String getFieldValue(JSONObject data, StatusField field) {
-        if (field == StatusField.PLAYER_LIST) {
-            JSONArray playerList = data.optJSONArray(field.getFieldName());
-            if (playerList != null && !playerList.isEmpty()) {
-                return playerList.toList().stream().map(Object::toString).collect(Collectors.joining("\n"));
-            } else {
-                return "No players online";
-            }
-        }
-        return data.optString(field.getFieldName(), "N/A");
-    }
-
-    private static void updateEmbed(TextChannel channel, String messageID) throws IOException {
-        EmbedBuilder embed = createEmbedMessage(getStatusTable());
-        channel.retrieveMessageById(messageID)
+    private static void updateEmbed(StatusInfo serverStatus, String messageID) throws IOException {
+        EmbedBuilder embed = createEmbedMessage(serverStatus.status);
+        serverStatus.channel.retrieveMessageById(messageID)
                 .queue(message -> message.editMessageEmbeds(embed.build()).queue());
     }
 
-    private static void createInitialMessage(TextChannel channel) throws IOException {
-        EmbedBuilder embed = createEmbedMessage(getStatusTable());
-        Message message = channel.sendMessageEmbeds(embed.build()).complete();
+    private static void createInitialMessage(StatusInfo serverStatus, String serverID) throws IOException {
+        EmbedBuilder embed = createEmbedMessage(serverStatus.status);
+        Message message = serverStatus.channel.sendMessageEmbeds(embed.build()).complete();
 
-            JSONObject channelIDs;
-            try {
-                channelIDs = FileIO.getJSONObjectFromFile(messageIDFile);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            channelIDs.put(serverID, message.getId());
-            FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
+        JSONObject channelIDs = FileIO.getJSONObjectFromFile(messageIDFile);
+        channelIDs.put(serverID, message.getId());
+
+        FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
     }
 
-    private static boolean messageExists(TextChannel channel, String messageID) {
-        return channel.retrieveMessageById(messageID).complete() != null;
-    }
+    private static class Task extends TimerTask {
 
-    private static TextChannel getTextChannel() throws IOException {
-        String channelID = getStatusTable().getString("CHANNEL_ID");
-        TextChannel channel = guild.getTextChannelById(channelID);
-        if (channel == null) {
-            throw new IllegalArgumentException("Channel not found: " + channelID);
+        private final Guild guild;
+        private final String serverID;
+
+        public Task(Guild guild, String serverID) {
+            this.guild = guild;
+            this.serverID = serverID;
         }
-        return channel;
-    }
-
-    private static String getMessageID() {
-        JSONObject channelIDs = getChannelIds();
-        return channelIDs.has(serverID) && !channelIDs.getString(serverID).isEmpty() ? channelIDs.getString(serverID) : null;
-    }
-
-    private static JSONObject getChannelIds() {
-        try {
-            return FileIO.getJSONObjectFromFile(messageIDFile);
-        } catch (IOException e) {
-            throw new IllegalStateException("Error reading channel IDs: " + e.getMessage());
-        }
-    }
-
-    private static JSONObject getStatusTable() throws IOException {
-        JSONObject parentTable = FileIO.getJSONObjectFromFile("halo-events.json");
-        return parentTable.getJSONObject(serverID).getJSONObject("status");
-    }
-
-    private static class StatusUpdaterTask extends TimerTask {
 
         @Override
         public void run() {
-            TextChannel channel;
             try {
-                channel = getTextChannel();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                String messageID = getMessageID();
-                if (messageID == null) {
-                    createInitialMessage(channel);
-                } else if (!messageExists(channel, messageID)) {
-                    createInitialMessage(channel);
-                } else {
-                    updateEmbed(channel, messageID);
+                StatusInfo serverStatus = getStatus(serverID, guild);
+                if (serverStatus.channel == null || serverStatus.status == null) {
+                    cancel();
+                    return;
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+
+                String messageID = getMessageID(serverID);
+
+                if (messageID == null || !messageExists(serverStatus, messageID)) {
+                    createInitialMessage(serverStatus, serverID);
+                } else {
+                    updateEmbed(serverStatus, messageID);
+                }
+            } catch (IOException | RuntimeException e) {
+                Logger.warning("Error updating status message: " + e.getMessage());
             }
         }
     }
