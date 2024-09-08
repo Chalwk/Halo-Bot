@@ -60,35 +60,68 @@ local config = {
     -- Formatting options are similar to the C library function `strftime()`
     timeStampFormat = "%A %d %B %Y - %X",
 
+    -- Interval (in seconds) at which the bot will check for new Halo events.
+    -- Set to 0 to disable automatic event notifications.
+    eventCheckInterval = 1,
+
+    -- Interval (in seconds) at which the bot will update the server status message.
+    -- Set to 0 to disable automatic server status updates.
+    statusCheckInterval = 30,
+
     -- Status settings:
     -- These settings control how the bot updates the server status message in Discord.
-    STATUS_SETTINGS = {
+    status = {
 
-        -- The channel ID where the bot will update the server status message.
-        -- This message includes details such as server name, IP, map, mode, and total players.
-        channelID = "xxxxxxxxxxxxxxxxxxx",
+        title = "🌐 Server Status",
+        description = "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
 
-        -- The interval (in seconds) at which the bot will update the server status message.
-        -- Set to 0 to disable automatic status updates.
-        statusCheckInterval = 30,
+        --
+        -- [!] NOTE: All field values except the "Server IP" are updated dynamically, so do not change them.
+        --
 
-        -- The name of the server to be displayed in the status message.
-        serverName = "YOUR_SERVER_NAME_HERE",
+        fields = {
+            {
+                name = "🏷️ Server Name", -- you can change this
+                value = "N/A",
+                inline = false
+            },
+            {
+                name = "📍 Server IP", -- you can change this
+                value = "FILL THIS IN MANUALLY", -- change this to your server IP:PORT
+                inline = false
+            },
+            {
+                name = "🗺️ Map", -- you can change this
+                value = "N/A",
+                inline = false
+            },
+            {
+                name = "⚙️ Mode", -- you can change this
+                value = "N/A",
+                inline = false
+            },
+            {
+                name = "👥 Total Players", -- you can change this
+                value = "N/A",
+                inline = false
+            },
+            {
+                name = "👤 Player List", -- you can change this
+                value = "N/A",
+                inline = false
+            }
+        },
 
-        -- The IP address and port of the server to be displayed in the status message.
-        serverIP = "xxx.xxx.xxx.xxx:xxxx"
+        -- The color of the embed message:
+        color = "BLUE",
 
-        -- At the moment, other data is included in the status message by default and cannot be customized (e.g., map, mode, total players).
-        -- This will change in future updates.
+        -- The channel ID where the bot will update the server status message:
+        channel = "xxxxxxxxxxxxxxxxxxx"
     },
 
     --------------------------------
     -- End of general settings --
     --------------------------------
-
-    -- Interval (in seconds) at which the bot will check for new Halo events.
-    -- Set to 0 to disable automatic event notifications.
-    eventCheckInterval = 1,
 
     -- Available colors for embed messages:
     -- RED, BLUE, GREEN, YELLOW, ORANGE, CYAN, MAGENTA, PINK, WHITE, BLACK, GRAY, DARK_GRAY, LIGHT_GRAY
@@ -344,7 +377,12 @@ api_version = '1.12.0.0'
 -- Configuration ends here -----------------------------------------------------------------------
 -- Do not edit below this line
 
-local serverData, players = {}, {}
+local serverData, players = {
+    sapp_events = {},
+    status = config.status,
+    eventCheckInterval = config.eventCheckInterval,
+    statusCheckInterval = config.statusCheckInterval,
+}, {}
 
 -- Path to the JSON Data file that will store all the events to be processed by the Discord Bot.
 local jsonEventsPath = "./Halo-Bot/halo-events.json"
@@ -358,8 +396,10 @@ local _date = os.date
 local _clock = os.clock
 local _tonumber = tonumber
 local _insert = table.insert
+local _concat = table.concat
 local _floor = math.floor
 local _format = string.format
+local _char = string.char
 local json = loadfile(jsonLibraryPath)()
 
 local ffa, falling, distance, first_blood, map, mode, game_type
@@ -411,41 +451,27 @@ function OnScriptLoad()
     register_callback(cb['EVENT_TEAM_SWITCH'], 'OnSwitch')
     register_callback(cb['EVENT_SCORE'], 'OnScore')
 
-    -- Configure server status settings
-    local status = config.STATUS_SETTINGS
-
-    -- Initialize serverData and status
-    serverData = {
-        sapp_events = {},
-        eventCheckInterval = config.eventCheckInterval,
-        statusCheckInterval = status.statusCheckInterval,
-        status = {
-            ["CHANNEL_ID"] = status["channelID"],
-            ["Server Name"] = status["serverName"],
-            ["Server IP"] = status["serverIP"],
-            ["Map"] = "N/A",
-            ["Mode"] = "N/A",
-            ["Total Players"] = "N/A",
-            ["Player List"] = {}
-        }
-    }
-
-    -- Initialize or read the existing JSON data file, add serverData, and update the JSON file
-    local jsonData = getJSONData() or {}
-    jsonData[config.serverID] = serverData
-    updateJSONData(jsonData)
-
     -- Trigger OnStart with a new game event.
     -- This is necessary for the script to work properly if loaded during a game.
     OnStart(true)
 end
 
---- Calculates the total number of players on the server, taking into account whether a player has quit or not.
--- @param isQuit Boolean Indicates if a player has quit
--- @return number Total number of players
-local function getTotalPlayers(isQuit)
-    local total = _tonumber(get_var(0, "$pn"))
-    return (isQuit and total - 1 or total)
+local function readWideString(Address, Length)
+    local count = 0
+    local byte_table = {}
+    for i = 1, Length do
+        if (read_byte(Address + count) ~= 0) then
+            byte_table[i] = _char(read_byte(Address + count))
+        end
+        count = count + 2
+    end
+    return _concat(byte_table)
+end
+
+local function getServerName()
+    local network_struct = read_dword(sig_scan("F3ABA1????????BA????????C740??????????E8????????668B0D") + 3)
+    local name = readWideString(network_struct + 0x8, 0x42)
+    return name ~= "" and name or "Waiting for server name..."
 end
 
 --- Parses a message template and replaces placeholders with corresponding values from the given arguments.
@@ -458,6 +484,44 @@ local function parseMessageTemplate(String, args)
         message = message:gsub(placeholder, value)
     end
     return message
+end
+
+--- Calculates the total number of players on the server, taking into account whether a player has quit or not.
+-- @param isQuit Boolean Indicates if a player has quit
+-- @return number Total number of players
+local function getTotalPlayers(isQuit)
+    local total = _tonumber(get_var(0, "$pn"))
+    return (isQuit and total - 1 or total)
+end
+
+--- Checks if the provided player should be excluded based on the event type and player ID.
+-- @param isQuit Boolean Indicates whether it's a quit event
+-- @param playerToCompare number The player to compare
+-- @param playerToExclude number The player to exclude
+-- @return boolean True if the player should be excluded, false otherwise
+local function exclude(isQuit, playerToCompare, playerToExclude)
+
+    if (not isQuit) then
+        return false
+    end
+
+    return playerToCompare == playerToExclude
+end
+
+--- Retrieves a list of players currently on the server.
+-- @return Table A table containing the names of all players on the server
+local function getPlayerList(isQuit, excludeThisPlayer)
+    local playerList = {}
+    for i = 1, 16 do
+        if player_present(i) then
+            local player = players[i]
+            if player and not exclude(isQuit, i, excludeThisPlayer) then
+                _insert(playerList, "- " .. player.name)
+            end
+        end
+    end
+
+    return playerList
 end
 
 --- Retrieves the event configuration based on the provided event name and type.
@@ -495,23 +559,22 @@ local function notify(eventName, args)
     local message = parseMessageTemplate(description, args)
     title = parseMessageTemplate(title, args)
 
-    -- Insert the event into the serverData and update the JSON file
-    local jsonData = getJSONData()
-    local serverEvents = jsonData[config.serverID].sapp_events
+    local jsonData = getJSONData() or {}
+    if not jsonData[config.serverID] then
+        jsonData[config.serverID] = serverData
+    end
 
-    -- Insert the event into the serverEvents table
-    _insert(serverEvents, {
+    local sappEvents = jsonData[config.serverID].sapp_events
+    _insert(sappEvents, {
         title = title,
         description = message,
         color = color,
         channel = channel
     })
+    serverData.sapp_events = sappEvents
 
-    -- Update the serverData with the new event
-    serverData.sapp_events = serverEvents
+    jsonData[config.serverID] = serverData -- ensures that everything is merged correctly
 
-    -- Update the JSON file with the new serverData
-    jsonData[config.serverID] = serverData
     updateJSONData(jsonData)
 end
 
@@ -524,35 +587,6 @@ local function getTag(type, name)
     return Tag ~= 0 and read_dword(Tag + 0xC) or nil
 end
 
---- Checks if the provided player should be excluded based on the event type and player ID.
--- @param isQuit Boolean Indicates whether it's a quit event
--- @param playerToCompare number The player to compare
--- @param playerToExclude number The player to exclude
--- @return boolean True if the player should be excluded, false otherwise
-local function exclude(isQuit, playerToCompare, playerToExclude)
-
-    if (not isQuit) then
-        return false
-    end
-
-    return playerToCompare == playerToExclude
-end
-
---- Retrieves a list of players currently on the server.
--- @return Table A table containing the names of all players on the server
-local function getPlayerList(isQuit, excludeThisPlayer)
-    local playerList = {}
-    for i = 1, 16 do
-        if player_present(i) then
-            local player = players[i]
-            if player and not exclude(isQuit, i, excludeThisPlayer) then
-                _insert(playerList, "- " .. player.name)
-            end
-        end
-    end
-    return playerList
-end
-
 --- Called when a new game starts, initializes various variables, adds players to a list, and sends an "OnStart" event notification.
 -- @param OnScriptLoad Boolean Indicates whether the script is being loaded for the first time
 -- @return nil
@@ -562,6 +596,9 @@ function OnStart(OnScriptLoad)
     if game_type == 'n/a' then
         return
     end
+
+    serverData.sapp_events = {}
+    serverData.status = config.status
 
     players = {}
     first_blood = true
@@ -581,12 +618,15 @@ function OnStart(OnScriptLoad)
         end
     end
 
+    local serverName = getServerName()
     local totalPlayers = getTotalPlayers()
+    local playerList = getPlayerList()
 
-    serverData.status["Map"] = map
-    serverData.status["Mode"] = mode
-    serverData.status["Total Players"] = totalPlayers
-    serverData.status["Player List"] = getPlayerList()
+    serverData.status.fields[1].value = serverName
+    serverData.status.fields[3].value = map
+    serverData.status.fields[4].value = mode .. " - " .. (ffa and "FFA" or "Team Play")
+    serverData.status.fields[5].value = totalPlayers
+    serverData.status.fields[6].value = (#playerList > 0 and _concat(playerList, "\n") or "No players online")
 
     notify("OnStart", {
         ["$totalPlayers"] = totalPlayers,
@@ -600,8 +640,8 @@ end
 -- @return nil
 function OnEnd()
 
-    serverData.status["Map"] = "Loading new Map..."
-    serverData.status["Mode"] = "N/A"
+    serverData.status.fields[3].value = "Loading new Map..."
+    serverData.status.fields[4].value = "N/A"
 
     notify("OnEnd", {
         ["$totalPlayers"] = getTotalPlayers(),
@@ -624,8 +664,11 @@ local function getJoinQuit(player, isQuit)
     player.level = level -- update their level in case it was changed during the game
 
     local totalPlayers = getTotalPlayers(isQuit)
-    serverData.status["Total Players"] = totalPlayers
-    serverData.status["Player List"] = getPlayerList(isQuit, player.id) -- exclude the player who quit (if it's a quit event)
+
+    local playerList = getPlayerList(isQuit, player.id)
+
+    serverData.status.fields[5].value = totalPlayers
+    serverData.status.fields[6].value = (#playerList > 0 and _concat(playerList, "\n") or "No players online")
 
     return {
         ["$playerID"] = player.id,
