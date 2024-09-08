@@ -528,10 +528,17 @@ local function exclude(isQuit, playerToCompare, playerToExclude)
     return playerToCompare == playerToExclude
 end
 
+--- Formats the K/D ratio based on the number of kills and deaths.
+-- @param kills number The number of kills
+-- @param deaths number The number of deaths
+-- @return string The formatted K/D ratio
 local function getKDR(kills, deaths)
     return _format("%.2f", deaths > 0 and kills / deaths or kills)
 end
 
+--- Retrieves the score of the provided player based on the game type.
+-- @param player Table A table representing the player
+-- @return string The formatted score string
 local function getScore(player)
 
     local score = get_var(player.id, "$score")
@@ -560,9 +567,6 @@ end
 --- Retrieves a list of players currently on the server.
 -- @return Table A table containing the names of all players on the server
 local function getPlayerList(isQuit, excludeThisPlayer)
-
-    -- We are going to edit the player list so that it includes their score and team.
-    -- The score will be formatted different depending on the game type.
 
     local playerList = {}
     for i = 1, 16 do
