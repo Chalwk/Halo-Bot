@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Halo Bot Startup
+Comment=Start Halo Discord Bot
+Path=.
+Exec=./halo_bot_startup.sh
+Terminal=true
