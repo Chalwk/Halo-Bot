@@ -1,0 +1,45 @@
+{
+  "server_1": {
+    "statusCheckInterval": 30,
+    "sapp_events": [],
+    "eventCheckInterval": 1,
+    "status": {
+      "color": "BLUE",
+      "channel": "1280825407255347200",
+      "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
+      "fields": [
+        {
+          "inline": false,
+          "name": "🏷️ Server Name",
+          "value": "- **Vanilla**"
+        },
+        {
+          "inline": false,
+          "name": "📍 Server IP",
+          "value": "FILL THIS IN MANUALLY"
+        },
+        {
+          "inline": false,
+          "name": "🗺️ Map",
+          "value": "- **prisoner**"
+        },
+        {
+          "inline": false,
+          "name": "⚙️ Mode",
+          "value": "- **Classic-CTF** | *Team Play*"
+        },
+        {
+          "inline": false,
+          "name": "👥 Total Players",
+          "value": "- **2**"
+        },
+        {
+          "inline": false,
+          "name": "👤 Player List",
+          "value": "- **Vanilla**  | Team: **Red** | Flag Caps: **0** | Kills: **0** | Deaths: **0** | K/D: **0.00**\n- **WrinkleAway**  | Team: **Blue** | Flag Caps: **0** | Kills: **0** | Deaths: **0** | K/D: **0.00**"
+        }
+      ],
+      "title": "🌐 Server Status"
+    }
+  }
+}

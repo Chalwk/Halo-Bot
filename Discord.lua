@@ -139,7 +139,7 @@ local config = {
             -- Available placeholders: $map, $mode, $totalPlayers, $faa
             enabled = true,
             title = "🌄 A new game has started!",
-            description = "- Map: [**$map**]\n- [**$mode**] (**$faa**)\n- Players: **$totalPlayers**",
+            description = "- Map: [**$map**]\n- [**$mode**] (**$faa**)",
             color = "GREEN",
             channel = "1281860347208138752"
         },
@@ -549,7 +549,7 @@ local function getScore(player)
 
     if game_type == "ctf" then
         local flag_caps = score
-        stringBuilder = stringBuilder .. "Flag Caps: " .. flag_caps
+        stringBuilder = stringBuilder .. "Flag Caps: **" .. flag_caps .. "**"
     elseif game_type == "race" then
         local laps = score
         stringBuilder = stringBuilder .. "Laps: **" .. laps .. "**"
@@ -684,7 +684,6 @@ function OnStart(OnScriptLoad)
     serverData.status.fields[6].value = playerList
 
     notify("OnStart", {
-        ["$totalPlayers"] = totalPlayers,
         ["$map"] = map,
         ["$mode"] = mode,
         ["$faa"] = (ffa and "FFA" or "Team Play")
