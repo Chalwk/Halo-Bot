@@ -136,7 +136,7 @@ local config = {
     -- Event-specific settings:
     events = {
         ["OnStart"] = {
-            -- Available placeholders: $map, $mode, $totalPlayers, $faa
+            -- Available placeholders: $map, $mode, $faa
             enabled = true,
             title = "🌄 A new game has started!",
             description = "- Map: [**$map**]\n- [**$mode**] (**$faa**)",
