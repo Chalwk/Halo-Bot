@@ -4,26 +4,27 @@
 package com.chalwk.util;
 
 import com.chalwk.util.Enums.ColorName;
-import com.chalwk.util.Logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.chalwk.util.Helpers.*;
-import static com.chalwk.util.StatusInfo.getStatus;
 
 public class StatusMonitor {
 
-    public StatusMonitor(String serverID, int intervalInSeconds, Guild guild) {
+    public StatusMonitor(GuildReadyEvent event) throws IOException {
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new Task(guild, serverID), 0, intervalInSeconds * 1000L);
+        timer.scheduleAtFixedRate(new Task(event), 0, 2000L);
     }
 
     private static EmbedBuilder createEmbedMessage(JSONObject data) {
@@ -55,53 +56,84 @@ public class StatusMonitor {
         return embed;
     }
 
-    private static void updateEmbed(StatusInfo serverStatus, String messageID) throws IOException {
-        EmbedBuilder embed = createEmbedMessage(serverStatus.status);
-        serverStatus.channel.retrieveMessageById(messageID)
-                .queue(message -> message.editMessageEmbeds(embed.build()).queue());
+    private static TextChannel getTextChannel(String channelID, Guild guild, String serverID) {
+        TextChannel channel = guild.getTextChannelById(channelID);
+        if (channel == null) {
+            throw new IllegalArgumentException("[getTextChannel()] Channel not found: [" + channelID + "] (Server ID: " + serverID + ")");
+        }
+        return channel;
     }
 
-    private static void createInitialMessage(StatusInfo serverStatus, String serverID) throws IOException {
-        EmbedBuilder embed = createEmbedMessage(serverStatus.status);
-        Message message = serverStatus.channel.sendMessageEmbeds(embed.build()).complete();
+    private static void sendMessage(String title, String description, String colorName, String channelID, Guild guild, String serverID) {
+        TextChannel channel = getTextChannel(channelID, guild, serverID);
 
-        JSONObject channelIDs = FileIO.getJSONObjectFromFile(messageIDFile);
-        channelIDs.put(serverID, message.getId());
+        Color color = ColorName.fromName(colorName);
+        EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setColor(color);
 
-        FileIO.saveJSONObjectToFile(channelIDs, messageIDFile);
+        try {
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("[sendMessage()] Error sending message: " + e.getMessage());
+        }
     }
 
     private static class Task extends TimerTask {
 
         private final Guild guild;
-        private final String serverID;
 
-        public Task(Guild guild, String serverID) {
-            this.guild = guild;
-            this.serverID = serverID;
+        public Task(GuildReadyEvent event) {
+            this.guild = event.getGuild();
         }
 
         @Override
         public void run() {
+            JSONObject parentTable;
+            JSONObject messageIDs;
             try {
+                parentTable = FileIO.getJSONObjectFromFile(HALO_EVENTS_FILE);
+                messageIDs = FileIO.getJSONObjectFromFile(MESSAGE_ID_FILE);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-                StatusInfo serverStatus = getStatus(serverID, guild);
-                if (serverStatus == null) {
-                    return;
-                }
-                if (serverStatus.channel == null || serverStatus.status == null) {
-                    cancel();
-                    return;
-                }
+            for (String serverID : parentTable.keySet()) {
+                updateServerStatus(serverID, parentTable, messageIDs);
+                JSONArray eventTable = parentTable.getJSONObject(serverID).getJSONArray("sapp_events");
 
-                String messageID = getMessageID(serverID);
-                if (messageID == null || !messageExists(serverStatus, messageID)) {
-                    createInitialMessage(serverStatus, serverID);
-                } else {
-                    updateEmbed(serverStatus, messageID);
+                // todo: Fix this. Sometimes events are not sent but the "eventTable" is cleared.
+
+                for (Object o : eventTable) {
+                    JSONObject event = (JSONObject) o;
+                    String title = event.getString("title");
+                    String description = event.getString("description");
+                    String channelID = event.getString("channel");
+                    String color = event.getString("color");
+                    sendMessage(title, description, color, channelID, guild, serverID);
                 }
-            } catch (IOException | RuntimeException e) {
-                Logger.warning("Error updating status message: " + e.getMessage());
+                eventTable.clear();
+            }
+            FileIO.saveJSONObjectToFile(parentTable, HALO_EVENTS_FILE);
+        }
+
+        private void updateServerStatus(String serverID, JSONObject parentTable, JSONObject messageIDs) {
+            JSONObject status = parentTable.getJSONObject(serverID).getJSONObject("status");
+            String statusChannelID = status.getString("channel");
+            TextChannel statusTextChannel = Optional.ofNullable(guild.getTextChannelById(statusChannelID)).orElseThrow(()
+                    -> new IllegalArgumentException("Channel not found: [" + statusChannelID + "] (Server ID: " + serverID + ")"));
+
+            EmbedBuilder embed = createEmbedMessage(status);
+            String messageID = messageIDs.optString(serverID, null);
+
+            if (messageID == null || !messageExists(statusTextChannel, messageID)) {
+                Message message = statusTextChannel.sendMessageEmbeds(embed.build()).complete();
+                messageIDs.put(serverID, message.getId());
+                FileIO.saveJSONObjectToFile(messageIDs, MESSAGE_ID_FILE);
+            } else {
+                statusTextChannel.retrieveMessageById(messageID)
+                        .queue(message -> message.editMessageEmbeds(embed.build()).queue());
             }
         }
     }

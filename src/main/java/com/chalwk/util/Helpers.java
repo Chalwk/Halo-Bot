@@ -3,31 +3,23 @@
 
 package com.chalwk.util;
 
-import org.json.JSONObject;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Helpers {
 
-    public static final String messageIDFile = "message-ids.json";
+    public static final String MESSAGE_ID_FILE = "message-ids.json";
+    public static final String HALO_EVENTS_FILE = "halo-events.json";
 
-    static boolean messageExists(StatusInfo status, String messageID) {
-        return status.channel.retrieveMessageById(messageID).complete() != null;
-    }
-
-    static JSONObject getChannelIds() {
+    static boolean messageExists(TextChannel channel, String messageID) {
         try {
-            return FileIO.getJSONObjectFromFile(messageIDFile);
-        } catch (IOException e) {
-            throw new IllegalStateException("Error reading channel IDs: " + e.getMessage());
+            return channel.retrieveMessageById(messageID).complete() != null;
+        } catch (ErrorResponseException e) {
+            return false;
         }
-    }
-
-    static String getMessageID(String serverID) {
-        JSONObject channelIDs = Helpers.getChannelIds();
-        return channelIDs.has(serverID) && !channelIDs.getString(serverID).isEmpty() ? channelIDs.getString(serverID) : null;
     }
 
     static String getTimestamp() {
