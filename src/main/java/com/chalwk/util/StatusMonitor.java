@@ -84,14 +84,17 @@ public class StatusMonitor {
         @Override
         public void run() {
             try {
+
                 StatusInfo serverStatus = getStatus(serverID, guild);
+                if (serverStatus == null) {
+                    return;
+                }
                 if (serverStatus.channel == null || serverStatus.status == null) {
                     cancel();
                     return;
                 }
 
                 String messageID = getMessageID(serverID);
-
                 if (messageID == null || !messageExists(serverStatus, messageID)) {
                     createInitialMessage(serverStatus, serverID);
                 } else {

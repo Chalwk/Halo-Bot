@@ -22,8 +22,11 @@ class StatusInfo {
     public static StatusInfo getStatus(String serverID, Guild guild) throws IOException {
 
         JSONObject parentTable = FileIO.getJSONObjectFromFile("halo-events.json");
-        JSONObject status = parentTable.getJSONObject(serverID).getJSONObject("status");
+        if (!parentTable.has(serverID)) {
+            return null;
+        }
 
+        JSONObject status = parentTable.getJSONObject(serverID).getJSONObject("status");
         String channelID = status.getString("channel");
         TextChannel channel = guild.getTextChannelById(channelID);
         if (channel == null) {

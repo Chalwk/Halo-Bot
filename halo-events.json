@@ -1,17 +1,73 @@
 {
   "server_1": {
-    "statusCheckInterval": 30,
-    "sapp_events": [],
     "eventCheckInterval": 1,
+    "sapp_events": [
+      {
+        "channel": "1282856429224726602",
+        "color": "GREEN",
+        "description": "- Map: [**bloodgulch**]\n- [**Race**] (**FFA**)",
+        "title": "🌄 A new game has started!"
+      }
+    ],
     "status": {
-      "color": "BLUE",
       "channel": "1280825407255347200",
+      "color": "BLUE",
       "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
       "fields": [
         {
           "inline": false,
           "name": "🏷️ Server Name",
-          "value": "- **Vanilla**"
+          "value": "- **LNZ DEV SERVER**"
+        },
+        {
+          "inline": false,
+          "name": "📍 Server IP",
+          "value": "FILL THIS IN MANUALLY"
+        },
+        {
+          "inline": false,
+          "name": "🗺️ Map",
+          "value": "- **bloodgulch**"
+        },
+        {
+          "inline": false,
+          "name": "⚙️ Mode",
+          "value": "- **Race** | *FFA*"
+        },
+        {
+          "inline": false,
+          "name": "👥 Total Players",
+          "value": "- **0**"
+        },
+        {
+          "inline": false,
+          "name": "👤 Player List",
+          "value": "No players online"
+        }
+      ],
+      "title": "🌐 Server Status"
+    },
+    "statusCheckInterval": 30
+  },
+  "server_2": {
+    "eventCheckInterval": 1,
+    "sapp_events": [
+      {
+        "channel": "1282853311535386718",
+        "color": "GREEN",
+        "description": "- Map: [**bloodgulch**]\n- [**Classic-CTF**] (**Team Play**)",
+        "title": "🌄 A new game has started!"
+      }
+    ],
+    "status": {
+      "channel": "1282853268699086938",
+      "color": "BLUE",
+      "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
+      "fields": [
+        {
+          "inline": false,
+          "name": "🏷️ Server Name",
+          "value": "- **VANILLA**"
         },
         {
           "inline": false,
@@ -40,6 +96,7 @@
         }
       ],
       "title": "🌐 Server Status"
-    }
+    },
+    "statusCheckInterval": 30
   }
 }

@@ -60,6 +60,10 @@ public class EventProcessingTask {
             try {
 
                 JSONObject parentTable = FileIO.getJSONObjectFromFile(HALO_EVENTS_FILE);
+                if (!parentTable.has(serverID)) {
+                    return;
+                }
+
                 JSONArray eventTable = parentTable.getJSONObject(serverID).getJSONArray("sapp_events");
 
                 for (Iterator<Object> it = eventTable.iterator(); it.hasNext(); ) {
