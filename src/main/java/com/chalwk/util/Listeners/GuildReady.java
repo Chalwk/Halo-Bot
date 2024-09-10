@@ -4,18 +4,15 @@
 package com.chalwk.util.Listeners;
 
 
-import com.chalwk.util.StatusMonitor;
+import com.chalwk.util.ServerMonitor;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 public class GuildReady extends ListenerAdapter {
 
-    private static final Set<String> monitoredServers = new HashSet<>();
     private static final String logo = """
             '||'  '||'     |     '||'       ..|''||           ..|'''.| '||''''|
              ||    ||     |||     ||       .|'    ||        .|'     '   ||  .
@@ -30,7 +27,7 @@ public class GuildReady extends ListenerAdapter {
         System.out.println(logo);
 
         try {
-            new StatusMonitor(event);
+            new ServerMonitor(event);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

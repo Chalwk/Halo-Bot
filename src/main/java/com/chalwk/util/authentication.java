@@ -6,19 +6,8 @@ import java.io.IOException;
 
 import static com.chalwk.util.FileIO.readFile;
 
-/**
- * A utility class for handling the bot authentication process, specifically for reading
- * the authentication token from a file.
- */
 public class authentication {
 
-    /**
-     * Retrieves the authentication token from a file named "auth.token" for the bot to connect
-     * to the Discord server.
-     *
-     * @return The authentication token as a String.
-     * @throws IOException if an error occurs while reading the file.
-     */
     public static String getToken() throws IOException {
         String token = readFile("auth.token");
         if (token.isEmpty()) {

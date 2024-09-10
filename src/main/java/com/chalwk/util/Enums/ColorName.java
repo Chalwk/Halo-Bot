@@ -22,20 +22,20 @@ public enum ColorName {
     DARK_GRAY("DARK_GRAY", Color.DARK_GRAY),
     LIGHT_GRAY("LIGHT_GRAY", Color.LIGHT_GRAY);
 
-    private final String name;
-    private final Color color;
-
     private static final Map<String, ColorName> colorMap = new HashMap<>();
-
-    ColorName(String name, Color color) {
-        this.name = name;
-        this.color = color;
-    }
 
     static {
         for (ColorName colorName : ColorName.values()) {
             colorMap.put(colorName.name.toLowerCase(), colorName);
         }
+    }
+
+    private final String name;
+    private final Color color;
+
+    ColorName(String name, Color color) {
+        this.name = name;
+        this.color = color;
     }
 
     public static Color fromName(String name) {

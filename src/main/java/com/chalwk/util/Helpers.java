@@ -3,9 +3,15 @@
 
 package com.chalwk.util;
 
+import com.chalwk.util.Enums.ColorName;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -26,5 +32,58 @@ public class Helpers {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy | HH:mm:ss");
         return now.format(formatter);
+    }
+
+    static EmbedBuilder createEmbedMessage(JSONObject data) {
+
+        String title = data.optString("title", "N/A");
+        String description = data.optString("description", "N/A");
+        String colorName = data.optString("color", "0x00FF00");
+
+        Color color = ColorName.fromName(colorName);
+        String timestamp = getTimestamp();
+
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle(title)
+                .setDescription(description)
+                .setColor(color)
+                .setFooter("Last updated: " + timestamp, null);
+
+        JSONArray fields = data.optJSONArray("fields");
+        if (fields != null) {
+            for (Object o : fields) {
+                JSONObject field = (JSONObject) o;
+                String fieldName = field.optString("name", "N/A");
+                String fieldValue = field.optString("value", "N/A");
+                boolean inline = field.optBoolean("inline", false);
+                embed.addField(fieldName, fieldValue, inline);
+            }
+        }
+
+        return embed;
+    }
+
+    private static TextChannel getTextChannel(String channelID, Guild guild, String serverID) {
+        TextChannel channel = guild.getTextChannelById(channelID);
+        if (channel == null) {
+            throw new IllegalArgumentException("[getTextChannel()] Channel not found: [" + channelID + "] (Server ID: " + serverID + ")");
+        }
+        return channel;
+    }
+
+    static void sendMessage(String title, String description, String colorName, String channelID, Guild guild, String serverID) {
+        TextChannel channel = getTextChannel(channelID, guild, serverID);
+
+        Color color = ColorName.fromName(colorName);
+        EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setTitle(title)
+                .setDescription(description)
+                .setColor(color);
+
+        try {
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("[sendMessage()] Error sending message: " + e.getMessage());
+        }
     }
 }
