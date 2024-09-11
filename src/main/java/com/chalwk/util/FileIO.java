@@ -6,8 +6,6 @@ package com.chalwk.util;
 import com.chalwk.util.Logging.Logger;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,19 +32,15 @@ public class FileIO {
         return currentDirectory + "/Halo-Bot/";
     }
 
-    private static void checkExists(File file) throws IOException {
-        boolean exists = file.exists();
-        if (!exists) {
-            boolean created = file.createNewFile();
-            if (!created) {
-                throw new IOException("Failed to create file: " + file.getAbsolutePath());
-            }
-        }
+    private static Path getFilePath(String fileName) {
+        return Paths.get(programPath, fileName);
     }
 
     public static String readFile(String fileName) throws IOException {
-        Path filePath = Paths.get(programPath, fileName);
-        checkExists(filePath.toFile());
+        Path filePath = getFilePath(fileName);
+        if (!Files.exists(filePath)) {
+            Files.createFile(filePath);
+        }
 
         byte[] contentBytes = Files.readAllBytes(filePath);
 
@@ -55,10 +49,7 @@ public class FileIO {
 
     public static void saveJSONObjectToFile(JSONObject jsonObject, String fileName) {
         try {
-            FileWriter file = new FileWriter(programPath + fileName);
-            file.write(jsonObject.toString(4));
-            file.flush();
-            file.close();
+            Files.writeString(getFilePath(fileName), jsonObject.toString(4), StandardCharsets.UTF_8);
         } catch (IOException e) {
             Logger.info("Error saving JSONObject to file: " + e.getMessage());
         }

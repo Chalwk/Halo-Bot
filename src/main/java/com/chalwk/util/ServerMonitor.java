@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.chalwk.util.Helpers.*;
 
@@ -56,8 +58,11 @@ public class ServerMonitor {
         @Override
         public void run() {
 
+            long startTime = System.currentTimeMillis();
+            ExecutorService executorService = Executors.newFixedThreadPool(4);
             JSONObject servers;
             JSONObject messageIDs;
+
             try {
                 servers = FileIO.getJSONObjectFromFile(HALO_EVENTS_FILE);
                 messageIDs = FileIO.getJSONObjectFromFile(MESSAGE_ID_FILE);
@@ -67,13 +72,18 @@ public class ServerMonitor {
 
             Set<String> updatedServers = new HashSet<>();
             for (String serverID : servers.keySet()) {
-                updateServerStatus(serverID, servers, messageIDs, guild);
+                executorService.submit(() -> updateServerStatus(serverID, servers, messageIDs, guild));
                 JSONArray events = servers.getJSONObject(serverID).getJSONArray("sapp_events");
                 sendEventNotification(serverID, events, updatedServers);
             }
+            executorService.shutdown();
+
             if (!updatedServers.isEmpty()) {
                 FileIO.saveJSONObjectToFile(servers, HALO_EVENTS_FILE);
             }
+
+            long endTime = System.currentTimeMillis();
+            System.out.println("Execution time: " + (endTime - startTime) + "ms");
         }
 
         private void sendEventNotification(String serverID, JSONArray events, Set<String> updatedServers) {

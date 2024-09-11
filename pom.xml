@@ -6,7 +6,7 @@
 
     <groupId>com.chalwk.Main</groupId>
     <artifactId>HaloBot</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <name>HaloBot</name>
     <description>Discord Bot built using the JDA framework</description>

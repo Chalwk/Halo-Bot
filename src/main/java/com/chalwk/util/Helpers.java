@@ -17,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 
 public class Helpers {
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy | HH:mm:ss");
+
     public static final String MESSAGE_ID_FILE = "message-ids.json";
     public static final String HALO_EVENTS_FILE = "halo-events.json";
 
@@ -29,9 +31,7 @@ public class Helpers {
     }
 
     static String getTimestamp() {
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy | HH:mm:ss");
-        return now.format(formatter);
+        return LocalDateTime.now().format(FORMATTER);
     }
 
     static EmbedBuilder createEmbedMessage(JSONObject data) {
