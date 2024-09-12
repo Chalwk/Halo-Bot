@@ -50,7 +50,7 @@ local config = {
     -- Used to store data for multiple servers in a single JSON file.
     -- Must be changed and kept unique if you are running multiple halo servers.
     -- Not strictly required if you are running a single server, in which case you can leave it as is.
-    serverID = "server_1",
+    serverID = "server_3",
 
     -- Default color for embed messages
     -- Available colors: "GREEN", "BLUE", "RED", "YELLOW", etc.
@@ -108,7 +108,7 @@ local config = {
         color = "BLUE",
 
         -- The channel ID where the bot will update the server status message:
-        channel = "1283163771287765045"
+        channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     },
 
     --------------------------------
@@ -133,7 +133,7 @@ local config = {
             title = "🌄 A new game has started!",
             description = "- Map: [**$map**]\n- [**$mode**] (**$faa**)",
             color = "GREEN",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnEnd"] = {
             -- Available placeholders: $map, $mode, $totalPlayers, $faa
@@ -141,7 +141,7 @@ local config = {
             title = "🌅 The game has ended!",
             description = "The game ended with **$totalPlayers** players.",
             color = "RED",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnJoin"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers, $playerID
@@ -149,7 +149,7 @@ local config = {
             title = "🟢 $playerName has joined the server!",
             description = "",
             color = "GREEN",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnQuit:
         ["OnQuit"] = {
@@ -158,7 +158,7 @@ local config = {
             title = "🔴 $playerName has left the server!",
             description = "",
             color = "RED",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnSpawn"] = {
             -- Available placeholders: $playerName, $playerID
@@ -166,7 +166,7 @@ local config = {
             title = "🐣 $playerName has spawned!",
             description = "",
             color = "YELLOW",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnSwitch:
         ["OnSwitch"] = {
@@ -175,7 +175,7 @@ local config = {
             title = "👥 Player has switched teams!",
             description = "**$playerName** switched teams. New team: **[$team]**",
             color = "YELLOW",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnWarp:
         ["OnWarp"] = {
@@ -184,7 +184,7 @@ local config = {
             title = "𒅒 $playerName is warping...",
             description = "",
             color = "YELLOW",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnReset"] = {
             -- Available placeholders: $map, $mode
@@ -192,7 +192,7 @@ local config = {
             title = "🔄 The map has been reset!",
             description = "- **$map**\n- **$mode**",
             color = "YELLOW",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnLogin"] = {
             -- Available placeholders: $playerName, $playerID
@@ -200,7 +200,7 @@ local config = {
             title = "👤 $playerName has logged in!",
             description = "",
             color = "YELLOW",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnSnap"] = {
             -- Available placeholders: $playerName, $playerID
@@ -208,7 +208,7 @@ local config = {
             title = "⊹ $playerName snapped!",
             description = "",
             color = "YELLOW",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnCommand"] = {
             -- Available placeholders: $type, $name, $id, $command, $playerID
@@ -216,7 +216,7 @@ local config = {
             title = "⌘ Command executed!",
             description = "[**$type**] **$playerName** (**$id**): *$command*",
             color = "RED",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnChat"] = {
             -- Available placeholders: $type, $playerName, $id, $message, $playerID
@@ -224,7 +224,7 @@ local config = {
             title = "🗨️ Chat message sent!",
             description = "[**$type**] **$playerName** (**$id**): *$message*",
             color = "BLUE",
-            channel = "1282856429224726602"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnScore"] = {
             [1] = {
@@ -233,7 +233,7 @@ local config = {
                 title = "🏆 CTF Scoreboard updated!",
                 description = "$playerName captured the flag for the **$playerTeam team**\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $playerTeam, $lapTime, $totalTeamLaps
             [2] = {
@@ -241,7 +241,7 @@ local config = {
                 title = "🏆 Team RACE Scoreboard updated!",
                 description = "$playerName completed a lap for the $playerTeam team\n- Lap Time: **$lapTime**\n- Total Laps: **$totalTeamLaps**",
                 color = "GREEN",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $lapTime, $playerScore
             [3] = {
@@ -249,7 +249,7 @@ local config = {
                 title = "🏆 FFA RACE Scoreboard updated!",
                 description = "$playerName completed a lap\n- Lap Time: **$lapTime**\n- Total Laps: **$playerScore**",
                 color = "GREEN",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $playerTeam, $redScore, $blueScore
             [4] = {
@@ -257,7 +257,7 @@ local config = {
                 title = "🏆 Team Slayer Scoreboard updated!",
                 description = "$playerName scored for the **$playerTeam team**\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $redScore, $blueScore
             [5] = {
@@ -265,7 +265,7 @@ local config = {
                 title = "🏆 FFA Slayer Scoreboard updated!",
                 description = "$playerName scored\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             }
         },
         ["OnDeath"] = {
@@ -276,7 +276,7 @@ local config = {
                 title = "☠️ $killerName drew first blood!",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [2] = {
                 -- killed from the grave
@@ -284,7 +284,7 @@ local config = {
                 title = "☠️ $victimName was killed from the grave by $killerName",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [3] = {
                 -- vehicle kill (includes being run over or killed by the vehicle's weapon)
@@ -294,7 +294,7 @@ local config = {
                 title = "☠️ $victimName was killed by $killerName",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [4] = {
                 -- pvp
@@ -302,7 +302,7 @@ local config = {
                 title = "☠️ $victimName was killed by $killerName",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [5] = {
                 -- guardians
@@ -310,7 +310,7 @@ local config = {
                 title = "☠️ $victimName was killed by the guardians",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [6] = {
                 -- suicide
@@ -318,7 +318,7 @@ local config = {
                 title = "☠️ $victimName committed suicide!",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [7] = {
                 -- betrayal
@@ -326,7 +326,7 @@ local config = {
                 title = "☠️ $victimName was betrayed by $killerName!",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [8] = {
                 -- squashed by a vehicle (when an unoccupied vehicle collides with you)
@@ -334,7 +334,7 @@ local config = {
                 title = "☠️ $victimName was squashed by a vehicle",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [9] = {
                 -- fall damage
@@ -342,7 +342,7 @@ local config = {
                 title = "☠️ $victimName fell and broke their leg",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [10] = {
                 -- killed by the server
@@ -350,7 +350,7 @@ local config = {
                 title = "☠️ $victimName was killed by the server",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [11] = {
                 -- unknown death
@@ -358,7 +358,7 @@ local config = {
                 title = "☠️ $victimName died",
                 description = "",
                 color = "RED",
-                channel = "1282856429224726602"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
             }
         }
     }
@@ -532,23 +532,18 @@ end
 local function getScore(player)
 
     local score = get_var(player.id, "$score")
-    local team = player.team
-    team = (ffa and "FFA") or team:sub(1, 1):upper() .. team:sub(2)
-
+    local team = ffa and "FFA" or player.team:sub(1, 1):upper() .. player.team:sub(2)
     local stringBuilder = " | Team: **" .. team .. "** | "
 
     if game_type == "ctf" then
-        local flag_caps = score
-        stringBuilder = stringBuilder .. "Flag Caps: **" .. flag_caps .. "**"
+        stringBuilder = stringBuilder .. "Flag Caps: **" .. score .. "**"
     elseif game_type == "race" then
-        local laps = score
-        stringBuilder = stringBuilder .. "Laps: **" .. laps .. "**"
+        stringBuilder = stringBuilder .. "Laps: **" .. score .. "**"
     end
 
     local kills = tonumber(get_var(player.id, "$kills"))
     local deaths = tonumber(get_var(player.id, "$deaths"))
-
-    stringBuilder = stringBuilder .. " | Kills: **" .. kills .. "**" .. " | Deaths: **" .. deaths .. "**"
+    stringBuilder = stringBuilder .. " | Kills: **" .. kills .. "** | Deaths: **" .. deaths .. "**"
     stringBuilder = stringBuilder .. " | K/D: **" .. getKDR(kills, deaths) .. "**"
 
     return stringBuilder
@@ -591,30 +586,22 @@ end
 -- @param eventName String The name of the event
 -- @param args Table A key-value table containing event-specific arguments
 local function notify(eventName, args)
-
-    -- Retrieve the event configuration based on the event name and type
     local eventConfig = getEventConfig(eventName, args.eventType)
     if not eventConfig then
         return
     end
 
-    -- Retrieve the title, description, color, and channel from the event configuration
-    local title = eventConfig.title
-    local description = eventConfig.description
+    local title = parseMessageTemplate(eventConfig.title, args)
+    local message = parseMessageTemplate(eventConfig.description, args)
     local color = eventConfig.color or config.defaultColor
     local channel = eventConfig.channel
 
-    -- Parse the title and description templates with the provided arguments
-    local message = parseMessageTemplate(description, args)
-    title = parseMessageTemplate(title, args)
-
-    -- Get the existing JSON data or create a new table if it doesn't exist
     local jsonData = getJSONData() or {}
+    if not jsonData[config.serverID] then
+        return
+    end
 
-    -- Update the status of the server data in the JSON data
     jsonData[config.serverID].status = serverData.status
-
-    -- Insert a new event into the events list
     _insert(jsonData[config.serverID].sapp_events, {
         title = title,
         description = message,
@@ -622,7 +609,6 @@ local function notify(eventName, args)
         channel = channel
     })
 
-    -- Update the JSON data file with the new information
     updateJSONData(jsonData)
 end
 
@@ -640,39 +626,33 @@ end
 -- @return nil
 function OnStart(OnScriptLoad)
 
+    -- Get the current game type
     game_type = get_var(0, "$gt")
     if game_type == 'n/a' then
         return
     end
 
-    players = {}
-    first_blood = true
-    ffa = (get_var(0, '$ffa') == '1')
+    -- Initialize variables
+    players, first_blood, ffa = {}, true, (get_var(0, '$ffa') == '1')
+    falling, distance = getTag('jpt!', 'globals\\falling'), getTag('jpt!', 'globals\\distance')
+    map, mode = get_var(0, "$map"), get_var(0, "$mode")
 
-    falling = getTag('jpt!', 'globals\\falling')
-    distance = getTag('jpt!', 'globals\\distance')
-
-    map = get_var(0, "$map")
-    mode = get_var(0, "$mode")
-
-    -- Loop through player slots, add joined players to the list, and call OnJoin function.
-    -- This is necessary to ensure that the player list is up-to-date when the game starts (if the script is loaded during a game).
+    -- Add all present players to the list
     for i = 1, 16 do
         if player_present(i) then
             OnJoin(i, OnScriptLoad)
         end
     end
 
-    local serverName = getServerName()
-    local totalPlayers = getTotalPlayers()
-    local playerList = getPlayerList()
-
+    -- Update server status fields
+    local serverName, totalPlayers, playerList = getServerName(), getTotalPlayers(), getPlayerList()
     serverData.status.fields[1].value = "- **" .. serverName .. "**"
     serverData.status.fields[3].value = "- **" .. map .. "**"
     serverData.status.fields[4].value = "- **" .. mode .. "** | " .. (ffa and "*FFA*" or "*Team Play*") .. ""
     serverData.status.fields[5].value = "- **" .. totalPlayers .. "**"
     serverData.status.fields[6].value = playerList
 
+    -- Send an "OnStart" event notification
     notify("OnStart", {
         ["$map"] = map,
         ["$mode"] = mode,
@@ -742,9 +722,8 @@ function OnJoin(id, OnScriptLoad)
         hash = get_var(id, '$hash')
     }
 
-    local player = players[id]
-    if player and not OnScriptLoad then
-        notify("OnJoin", getJoinQuit(player, false))
+    if not OnScriptLoad then
+        notify("OnJoin", getJoinQuit(players[id], false))
     end
 end
 
@@ -933,33 +912,32 @@ end
 --- Called when a player scores, sends an "OnScore" event notification with details about the score.
 -- @param id number The player's index ID
 function OnScore(id)
+
     local player = players[id]
     if player then
 
-        local eventType
+        local eventType = ({
+            ctf = 1,
+            race = not ffa and 2 or 3,
+            slayer = not ffa and 4 or 5
+        })[game_type]
 
-        if game_type == "ctf" then
-            eventType = 1
-        elseif (game_type == "race") then
-            eventType = not ffa and 2 or 3
+        if game_type == "race" then
             player.lapTime = formatTime(_clock() - player.lapTime)
-        elseif (game_type == "slayer") then
-            eventType = not ffa and 4 or 5
         end
 
-        local score = get_var(id, "$score")
-        local redScore = get_var(0, "$redscore")
-        local blueScore = get_var(0, "$bluescore")
+        local blue_score = get_var(0, "$bluescore")
+        local red_score = get_var(0, "$redscore")
 
         notify("OnScore", {
             ["eventType"] = eventType,
             ["$lapTime"] = player.lapTime or "N/A",
-            ["$totalTeamLaps"] = player.team == "red" and redScore or blueScore,
-            ["$playerScore"] = score,
+            ["$totalTeamLaps"] = player.team == "red" and red_score or blue_score,
+            ["$playerScore"] = get_var(id, "$score"),
             ["$playerName"] = player.name,
             ["$playerTeam"] = player.team or "FFA",
-            ["$redScore"] = redScore or "N/A",
-            ["$blueScore"] = blueScore or "N/A",
+            ["$redScore"] = red_score,
+            ["$blueScore"] = blue_score,
         })
 
         player.lapTime = _clock()
@@ -1039,10 +1017,12 @@ function OnDeath(victim, killer, metaID)
 
         :: done ::
 
+        serverData.status.fields[6].value = getPlayerList()
+
         notify("OnDeath", {
             ["eventType"] = eventType,
             ["$killerName"] = killerPlayer and killerPlayer.name or "N/A",
-            ["$victimName"] = killerPlayer and victimPlayer.name or "N/A",
+            ["$victimName"] = victimPlayer and victimPlayer.name or "N/A",
             ["$killerID"] = killerPlayer and killerPlayer.id or "N/A",
             ["$victimID"] = victimPlayer and victimPlayer.id or "N/A",
         })
