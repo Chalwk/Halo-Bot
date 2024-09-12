@@ -1,6 +1,3 @@
-/* Copyright (c) 2024 Jericho Crosby <jericho.crosby227@gmail.com>. Licensed under GNU General Public License v3.0.
-   See the LICENSE file or visit https://www.gnu.org/licenses/gpl-3.0.en.html for details. */
-
 package com.chalwk.bot;
 
 import com.chalwk.CommandManager.CommandListener;
@@ -16,32 +13,27 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import java.io.IOException;
 
-/**
- * A class responsible for initializing and setting up the bot for the Virtual Pets game project.
- */
 public class BotInitializer {
 
-    /**
-     * An instance of the PetDataHandler class to manage pet data.
-     */
+    // ShardManager instance for managing bot shards.
     public static ShardManager shardManager;
 
-    /**
-     * The bot's authentication token.
-     */
+    // Authentication token for the bot.
     private final String token;
 
     /**
-     * Constructs a BotInitializer instance and retrieves the bot's authentication token.
+     * Constructs a BotInitializer and retrieves the authentication token.
      *
-     * @throws IOException if there's an error reading the token file.
+     * @throws IOException If an I/O error occurs while retrieving the token.
      */
     public BotInitializer() throws IOException {
         this.token = authentication.getToken();
     }
 
     /**
-     * Initializes the bot and sets up event listeners and commands.
+     * Initializes the bot with the specified settings and registers event listeners.
+     *
+     * @throws IOException If an I/O error occurs during initialization.
      */
     public void initializeBot() throws IOException {
 
@@ -60,9 +52,9 @@ public class BotInitializer {
     }
 
     /**
-     * Registers the available commands for the bot.
+     * Registers commands with the ShardManager.
      *
-     * @param shardManager The ShardManager instance used to manage the bot.
+     * @param shardManager The ShardManager to register commands with.
      */
     private void registerCommands(ShardManager shardManager) {
         CommandListener commands = new CommandListener();

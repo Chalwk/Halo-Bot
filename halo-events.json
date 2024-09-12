@@ -1,43 +1,43 @@
 {
-  "server_1": {
+    "server_1": {
     "sapp_events": [],
     "status": {
-      "color": "BLUE",
-      "channel": "1283163771287765045",
-      "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
-      "fields": [
-        {
-          "inline": false,
-          "name": "🏷️ Server Name",
-          "value": "- **LNZ DEV SERVER**"
-        },
-        {
-          "inline": false,
-          "name": "📍 Server IP",
-          "value": "FILL THIS IN MANUALLY"
-        },
-        {
-          "inline": false,
-          "name": "🗺️ Map",
-          "value": "- **bloodgulch**"
-        },
-        {
-          "inline": false,
-          "name": "⚙️ Mode",
-          "value": "- **Race** | *FFA*"
-        },
-        {
-          "inline": false,
-          "name": "👥 Total Players",
-          "value": "- **0**"
-        },
-        {
-          "inline": false,
-          "name": "👤 Player List",
-          "value": "No players online"
-        }
-      ],
-      "title": "🌐 Server Status"
+        "color": "BLUE",
+        "channel": "1283163771287765045",
+        "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
+        "fields": [
+            {
+                "inline": false,
+                "name": "🏷️ Server Name",
+                "value": "- **LNZ DEV SERVER**"
+            },
+            {
+                "inline": false,
+                "name": "📍 Server IP",
+                "value": "FILL THIS IN MANUALLY"
+            },
+            {
+                "inline": false,
+                "name": "🗺️ Map",
+                "value": "- **bloodgulch**"
+            },
+            {
+                "inline": false,
+                "name": "⚙️ Mode",
+                "value": "- **Race** | *FFA*"
+            },
+            {
+                "inline": false,
+                "name": "👥 Total Players",
+                "value": "- **2**"
+            },
+            {
+                "inline": false,
+                "name": "👤 Player List",
+                "value": "- **WrinkleAway**  | Team: **FFA** | Laps: **0** | Kills: **1** | Deaths: **1** | K/D: **1.00**\n- **^wEyeBeast**  | Team: **FFA** | Laps: **0** | Kills: **0** | Deaths: **1** | K/D: **0.00**"
+            }
+        ],
+        "title": "🌐 Server Status"
     }
-  }
+    }
 }

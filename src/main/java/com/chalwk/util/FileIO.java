@@ -1,6 +1,3 @@
-/* Copyright (c) 2024 Jericho Crosby <jericho.crosby227@gmail.com>. Licensed under GNU General Public License v3.0.
-   See the LICENSE file or visit https://www.gnu.org/licenses/gpl-3.0.en.html for details. */
-
 package com.chalwk.util;
 
 import com.chalwk.util.Logging.Logger;
@@ -14,28 +11,45 @@ import java.nio.file.Paths;
 
 public class FileIO {
 
+    // Path to the program's directory.
     static String programPath = getProgramPath();
 
+    // Default constructor for FileIO.
     public FileIO() {
 
     }
 
+    /**
+     * Retrieves the program's path.
+     *
+     * @return The program's path as a String.
+     */
     private static String getProgramPath() {
         String currentDirectory = System.getProperty("user.dir");
         currentDirectory = currentDirectory.replace("\\", "/");
-
-        // This is for when the program is run from the IDE:
         if (currentDirectory.endsWith("/Halo-Bot")) {
             return currentDirectory + "/";
         }
-
         return currentDirectory + "/Halo-Bot/";
     }
 
+    /**
+     * Constructs a Path object for the given file name.
+     *
+     * @param fileName The name of the file.
+     * @return The Path object for the specified file.
+     */
     private static Path getFilePath(String fileName) {
         return Paths.get(programPath, fileName);
     }
 
+    /**
+     * Reads the content of a file as a String.
+     *
+     * @param fileName The name of the file to read.
+     * @return The content of the file as a String.
+     * @throws IOException If an I/O error occurs reading from the file.
+     */
     public static String readFile(String fileName) throws IOException {
         Path filePath = getFilePath(fileName);
         if (!Files.exists(filePath)) {
@@ -47,6 +61,12 @@ public class FileIO {
         return new String(contentBytes, StandardCharsets.UTF_8);
     }
 
+    /**
+     * Saves a JSONObject to a file.
+     *
+     * @param jsonObject The JSONObject to save.
+     * @param fileName   The name of the file to save the JSONObject to.
+     */
     public static void saveJSONObjectToFile(JSONObject jsonObject, String fileName) {
         try {
             Files.writeString(getFilePath(fileName), jsonObject.toString(4), StandardCharsets.UTF_8);
@@ -55,6 +75,13 @@ public class FileIO {
         }
     }
 
+    /**
+     * Retrieves a JSONObject from a file.
+     *
+     * @param fileName The name of the file to read the JSONObject from.
+     * @return The JSONObject read from the file.
+     * @throws IOException If an I/O error occurs reading from the file.
+     */
     public static JSONObject getJSONObjectFromFile(String fileName) throws IOException {
         String content = readFile(fileName);
         if (content.isEmpty()) {
