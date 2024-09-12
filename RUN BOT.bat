@@ -1,5 +1,5 @@
 @echo off
-set VERSION=1.2.0
+set VERSION=1.3.0
 set JAR_FILE_NAME=HaloBot-%VERSION%.jar
 color 0A
 echo Halo Discord Bot version: %VERSION%

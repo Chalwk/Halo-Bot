@@ -3,21 +3,32 @@
 package com.chalwk.util.Logging;
 
 public enum LogLevel {
-    SEVERE(0),
-    WARNING(1),
-    INFO(2),
-    CONFIG(3),
-    FINE(4),
-    FINER(5),
-    FINEST(6),
-    ALL(7);
+    SEVERE(0),   // Most severe level, indicating a serious failure.
+    WARNING(1),  // Indicates a potential problem.
+    INFO(2),     // Informational messages that highlight the progress of the application.
+    CONFIG(3),   // Configuration messages.
+    FINE(4),     // Fine-grained informational events.
+    FINER(5),    // Finer-grained informational events.
+    FINEST(6),   // Finest-grained informational events.
+    ALL(7);      // All levels, intended to turn on all logging.
 
+    // The integer value associated with the log level.
     private final int levelValue;
 
+    /**
+     * Constructor to initialize the log level with its associated integer value.
+     *
+     * @param value The integer value representing the log level.
+     */
     LogLevel(int value) {
         this.levelValue = value;
     }
 
+    /**
+     * Gets the integer value associated with the log level.
+     *
+     * @return The integer value of the log level.
+     */
     public int getValue() {
         return levelValue;
     }

@@ -13,6 +13,7 @@ import java.io.IOException;
 
 public class GuildReady extends ListenerAdapter {
 
+    // ASCII art logo to be displayed when the guild is ready.
     private static final String logo = """
             '||'  '||'     |     '||'       ..|''||           ..|'''.| '||''''|
              ||    ||     |||     ||       .|'    ||        .|'     '   ||  .
@@ -23,12 +24,17 @@ public class GuildReady extends ListenerAdapter {
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
 
+        // Print the name of the connected guild to the console.
         System.out.println("Connected to " + event.getGuild().getName());
+
+        // Print the ASCII art logo to the console.
         System.out.println(logo);
 
         try {
+            // Initialize the ServerMonitor with the event.
             new ServerMonitor(event);
         } catch (IOException e) {
+            // Throw a RuntimeException if an IOException occurs.
             throw new RuntimeException(e);
         }
     }
