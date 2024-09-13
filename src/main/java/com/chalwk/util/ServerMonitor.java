@@ -20,21 +20,27 @@ import static com.chalwk.util.Helpers.*;
 
 public class ServerMonitor {
 
-    // Scheduler for running periodic tasks with a single thread.
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-    // Executor service for handling concurrent tasks with a fixed thread pool of 4 threads.
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
-
     /**
-     * Constructs a ServerMonitor and schedules a task to run at a fixed rate.
+     * Constructs a new ServerMonitor instance and schedules a task to run at a fixed rate.
      *
-     * @param event The GuildReadyEvent that triggers the initialization of the ServerMonitor.
-     * @throws IOException If an I/O error occurs during the initialization.
+     * @param event The GuildReadyEvent that triggers the server monitor.
+     * @throws IOException If an I/O error occurs.
      */
     public ServerMonitor(GuildReadyEvent event) throws IOException {
-        // Schedule the Task to run at a fixed rate of every 2 seconds.
-        scheduler.scheduleAtFixedRate(new Task(event), 0, 2, TimeUnit.SECONDS);
+        // Create a CloseableScheduledExecutorService with a single-threaded scheduled executor.
+        CloseableScheduledExecutorService scheduler = new CloseableScheduledExecutorService(Executors.newScheduledThreadPool(1));
+
+        // Create a CloseableExecutorService with a cached thread pool executor.
+        CloseableExecutorService executorService = new CloseableExecutorService(Executors.newCachedThreadPool());
+
+        // Get the ExecutorService from the CloseableExecutorService.
+        ExecutorService executor = executorService.executorService;
+
+        // Create a new Task instance with the event and executor.
+        Task task = new Task(event, executor);
+
+        // Schedule the task to run at a fixed rate of every 2 seconds, with no initial delay.
+        scheduler.scheduleAtFixedRate(task, 0, 2, TimeUnit.SECONDS);
     }
 
     /**
@@ -73,19 +79,63 @@ public class ServerMonitor {
         }
     }
 
-    private class Task implements Runnable {
+    /**
+     * A wrapper for ScheduledExecutorService that implements AutoCloseable.
+     * This allows the service to be used in try-with-resources statements.
+     */
+    private record CloseableScheduledExecutorService(ScheduledExecutorService scheduler) implements AutoCloseable {
+
+        /**
+         * Schedules a task to run at a fixed rate.
+         *
+         * @param task         The task to be scheduled.
+         * @param initialDelay The time to delay first execution.
+         * @param period       The period between successive executions.
+         * @param unit         The time unit of the initialDelay and period parameters.
+         */
+        public void scheduleAtFixedRate(Runnable task, long initialDelay, long period, TimeUnit unit) {
+            scheduler.scheduleAtFixedRate(task, initialDelay, period, unit);
+        }
+
+        /**
+         * Shuts down the ScheduledExecutorService.
+         */
+        @Override
+        public void close() {
+            scheduler.shutdown();
+        }
+    }
+
+    /**
+     * A wrapper for ExecutorService that implements AutoCloseable.
+     * This allows the service to be used in try-with-resources statements.
+     */
+    private record CloseableExecutorService(ExecutorService executorService) implements AutoCloseable {
+
+        /**
+         * Shuts down the ExecutorService.
+         */
+        @Override
+        public void close() {
+            executorService.shutdown();
+        }
+    }
+
+    private static class Task implements Runnable {
 
         private final Guild guild;
+        private final ExecutorService executorService;
 
-        public Task(GuildReadyEvent event) {
+        public Task(GuildReadyEvent event, ExecutorService executorService) {
             this.guild = event.getGuild();
+            this.executorService = executorService;
         }
 
         @Override
         public void run() {
 
             // Record the start time of the task execution.
-            //long startTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             JSONObject servers;
             JSONObject messageIDs;
 
@@ -104,7 +154,8 @@ public class ServerMonitor {
             for (String serverID : servers.keySet()) {
 
                 // Submit a task to update the server status.
-                executorService.submit(() -> updateServerStatus(serverID, servers, messageIDs, guild));
+                executorService.execute(() -> updateServerStatus(serverID, servers, messageIDs, guild));
+
                 // Retrieve the events for the server and send notifications.
                 JSONArray events = servers.getJSONObject(serverID).getJSONArray("sapp_events");
                 sendEventNotification(serverID, events, updatedServers);
@@ -116,8 +167,8 @@ public class ServerMonitor {
             }
 
             // Record the end time and print the execution duration.
-            //long endTime = System.currentTimeMillis();
-            //System.out.println("Execution time: " + (endTime - startTime) + "ms");
+            long endTime = System.currentTimeMillis();
+            System.out.println("Execution time: " + (endTime - startTime) + "ms");
         }
 
         /**
