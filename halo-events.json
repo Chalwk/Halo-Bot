@@ -1,125 +1,125 @@
 {
-  "server_3": {
-    "sapp_events": [],
-    "status": {
-      "color": "BLUE",
-      "channel": "1283473174176075808",
-      "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
-      "fields": [
-        {
-          "inline": false,
-          "name": "🏷️ Server Name",
-          "value": "- **VANILLA 2**"
-        },
-        {
-          "inline": false,
-          "name": "📍 Server IP",
-          "value": "FILL THIS IN MANUALLY"
-        },
-        {
-          "inline": false,
-          "name": "🗺️ Map",
-          "value": "- **bloodgulch**"
-        },
-        {
-          "inline": false,
-          "name": "⚙️ Mode",
-          "value": "- **Slayer** | *FFA*"
-        },
-        {
-          "inline": false,
-          "name": "👥 Total Players",
-          "value": "- **0**"
-        },
-        {
-          "inline": false,
-          "name": "👤 Player List",
-          "value": "No players online"
+    "server_3": {
+        "sapp_events": [],
+        "status": {
+            "color": "BLUE",
+            "channel": "1283473174176075808",
+            "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
+            "fields": [
+                {
+                    "inline": false,
+                    "name": "🏷️ Server Name",
+                    "value": "- **VANILLA 2**"
+                },
+                {
+                    "inline": false,
+                    "name": "📍 Server IP",
+                    "value": "FILL THIS IN MANUALLY"
+                },
+                {
+                    "inline": false,
+                    "name": "🗺️ Map",
+                    "value": "- **bloodgulch**"
+                },
+                {
+                    "inline": false,
+                    "name": "⚙️ Mode",
+                    "value": "- **Slayer** | *FFA*"
+                },
+                {
+                    "inline": false,
+                    "name": "👥 Total Players",
+                    "value": "- **0**"
+                },
+                {
+                    "inline": false,
+                    "name": "👤 Player List",
+                    "value": "No players online"
+                }
+            ],
+            "title": "🌐 Server Status"
         }
-      ],
-      "title": "🌐 Server Status"
-    }
-  },
-  "server_2": {
-    "sapp_events": [],
-    "status": {
-      "color": "BLUE",
-      "channel": "1283473103938256980",
-      "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
-      "fields": [
-        {
-          "inline": false,
-          "name": "🏷️ Server Name",
-          "value": "- **VANILLA 1**"
-        },
-        {
-          "inline": false,
-          "name": "📍 Server IP",
-          "value": "FILL THIS IN MANUALLY"
-        },
-        {
-          "inline": false,
-          "name": "🗺️ Map",
-          "value": "- **bloodgulch**"
-        },
-        {
-          "inline": false,
-          "name": "⚙️ Mode",
-          "value": "- **CTF** | *Team Play*"
-        },
-        {
-          "inline": false,
-          "name": "👥 Total Players",
-          "value": "- **0**"
-        },
-        {
-          "inline": false,
-          "name": "👤 Player List",
-          "value": "No players online"
+    },
+    "server_2": {
+        "sapp_events": [],
+        "status": {
+            "color": "BLUE",
+            "channel": "1283473103938256980",
+            "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
+            "fields": [
+                {
+                    "inline": false,
+                    "name": "🏷️ Server Name",
+                    "value": "- **VANILLA 1**"
+                },
+                {
+                    "inline": false,
+                    "name": "📍 Server IP",
+                    "value": "FILL THIS IN MANUALLY"
+                },
+                {
+                    "inline": false,
+                    "name": "🗺️ Map",
+                    "value": "- **bloodgulch**"
+                },
+                {
+                    "inline": false,
+                    "name": "⚙️ Mode",
+                    "value": "- **CTF** | *Team Play*"
+                },
+                {
+                    "inline": false,
+                    "name": "👥 Total Players",
+                    "value": "- **0**"
+                },
+                {
+                    "inline": false,
+                    "name": "👤 Player List",
+                    "value": "No players online"
+                }
+            ],
+            "title": "🌐 Server Status"
         }
-      ],
-      "title": "🌐 Server Status"
-    }
-  },
-  "server_1": {
-    "sapp_events": [],
-    "status": {
-      "color": "BLUE",
-      "channel": "1283163771287765045",
-      "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
-      "fields": [
-        {
-          "inline": false,
-          "name": "🏷️ Server Name",
-          "value": "- **LNZ DEV SERVER**"
-        },
-        {
-          "inline": false,
-          "name": "📍 Server IP",
-          "value": "FILL THIS IN MANUALLY"
-        },
-        {
-          "inline": false,
-          "name": "🗺️ Map",
-          "value": "- **bloodgulch**"
-        },
-        {
-          "inline": false,
-          "name": "⚙️ Mode",
-          "value": "- **Team Slayer** | *Team Play*"
-        },
-        {
-          "inline": false,
-          "name": "👥 Total Players",
-          "value": "- **0**"
-        },
-        {
-          "inline": false,
-          "name": "👤 Player List",
-          "value": "No players online"
+    },
+    "server_1": {
+        "sapp_events": [],
+        "status": {
+            "color": "BLUE",
+            "channel": "1283163771287765045",
+            "description": "Real-time status updates of the server.\nThis status is dynamically updated every 30 seconds.",
+            "fields": [
+                {
+                    "inline": false,
+                    "name": "🏷️ Server Name",
+                    "value": "- **LNZ DEV SERVER**"
+                },
+                {
+                    "inline": false,
+                    "name": "📍 Server IP",
+                    "value": "FILL THIS IN MANUALLY"
+                },
+                {
+                    "inline": false,
+                    "name": "🗺️ Map",
+                    "value": "- **bloodgulch**"
+                },
+                {
+                    "inline": false,
+                    "name": "⚙️ Mode",
+                    "value": "- **Team Slayer** | *Team Play*"
+                },
+                {
+                    "inline": false,
+                    "name": "👥 Total Players",
+                    "value": "- **0**"
+                },
+                {
+                    "inline": false,
+                    "name": "👤 Player List",
+                    "value": "No players online"
+                }
+            ],
+            "title": "🌐 Server Status"
         }
-      ],
-      "title": "🌐 Server Status"
     }
-  }
 }

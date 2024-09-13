@@ -80,6 +80,34 @@ public class ServerMonitor {
     }
 
     /**
+     * Sends event notifications for a specific server.
+     *
+     * @param serverID       The ID of the server for which events are being sent.
+     * @param events         A JSON array containing the events to be sent.
+     * @param updatedServers A set of server IDs that have been updated.
+     */
+    private static void sendEventNotification(String serverID, JSONArray events, Set<String> updatedServers, Guild guild) {
+        for (Object o : events) {
+            JSONObject event = (JSONObject) o;
+
+            // Extract event details.
+            String title = event.getString("title");
+            String description = event.getString("description");
+            String channelID = event.getString("channel");
+            String color = event.getString("color");
+
+            // Send the event message.
+            sendMessage(title, description, color, channelID, guild, serverID);
+
+            // Mark the server as updated.
+            updatedServers.add(serverID);
+        }
+
+        // Clear the events after sending notifications.
+        events.clear();
+    }
+
+    /**
      * A wrapper for ScheduledExecutorService that implements AutoCloseable.
      * This allows the service to be used in try-with-resources statements.
      */
@@ -158,7 +186,7 @@ public class ServerMonitor {
 
                 // Retrieve the events for the server and send notifications.
                 JSONArray events = servers.getJSONObject(serverID).getJSONArray("sapp_events");
-                sendEventNotification(serverID, events, updatedServers);
+                sendEventNotification(serverID, events, updatedServers, guild);
             }
 
             // Save the updated server data if any servers were updated.
@@ -169,34 +197,6 @@ public class ServerMonitor {
             // Record the end time and print the execution duration.
             long endTime = System.currentTimeMillis();
             System.out.println("Execution time: " + (endTime - startTime) + "ms");
-        }
-
-        /**
-         * Sends event notifications for a specific server.
-         *
-         * @param serverID       The ID of the server for which events are being sent.
-         * @param events         A JSON array containing the events to be sent.
-         * @param updatedServers A set of server IDs that have been updated.
-         */
-        private void sendEventNotification(String serverID, JSONArray events, Set<String> updatedServers) {
-            for (Object o : events) {
-                JSONObject event = (JSONObject) o;
-
-                // Extract event details.
-                String title = event.getString("title");
-                String description = event.getString("description");
-                String channelID = event.getString("channel");
-                String color = event.getString("color");
-
-                // Send the event message.
-                sendMessage(title, description, color, channelID, guild, serverID);
-
-                // Mark the server as updated.
-                updatedServers.add(serverID);
-            }
-
-            // Clear the events after sending notifications.
-            events.clear();
         }
     }
 }
