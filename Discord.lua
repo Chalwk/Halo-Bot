@@ -50,7 +50,7 @@ local config = {
     -- Used to store data for multiple servers in a single JSON file.
     -- Must be changed and kept unique if you are running multiple halo servers.
     -- Not strictly required if you are running a single server, in which case you can leave it as is.
-    serverID = "server_3",
+    serverID = "server_1",
 
     -- Default color for embed messages
     -- Available colors: "GREEN", "BLUE", "RED", "YELLOW", etc.
@@ -108,7 +108,7 @@ local config = {
         color = "BLUE",
 
         -- The channel ID where the bot will update the server status message:
-        channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
     },
 
     --------------------------------
@@ -131,9 +131,9 @@ local config = {
             -- Available placeholders: $map, $mode, $faa
             enabled = true,
             title = "🌄 A new game has started!",
-            description = "- Map: [**$map**]\n- [**$mode**] (**$faa**)",
+            description = "- Map: [**$map**]\n- Mode: [**$mode**] (**$faa**)",
             color = "GREEN",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnEnd"] = {
             -- Available placeholders: $map, $mode, $totalPlayers, $faa
@@ -141,7 +141,7 @@ local config = {
             title = "🌅 The game has ended!",
             description = "The game ended with **$totalPlayers** players.",
             color = "RED",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnJoin"] = {
             -- Available placeholders: $playerName, $ipAddress, $cdHash, $indexID, $privilegeLevel, $joinTime, $ping, $totalPlayers, $playerID
@@ -149,7 +149,7 @@ local config = {
             title = "🟢 $playerName has joined the server!",
             description = "",
             color = "GREEN",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnQuit:
         ["OnQuit"] = {
@@ -158,7 +158,7 @@ local config = {
             title = "🔴 $playerName has left the server!",
             description = "",
             color = "RED",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnSpawn"] = {
             -- Available placeholders: $playerName, $playerID
@@ -166,7 +166,7 @@ local config = {
             title = "🐣 $playerName has spawned!",
             description = "",
             color = "YELLOW",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnSwitch:
         ["OnSwitch"] = {
@@ -175,7 +175,7 @@ local config = {
             title = "👥 Player has switched teams!",
             description = "**$playerName** switched teams. New team: **[$team]**",
             color = "YELLOW",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         -- OnWarp:
         ["OnWarp"] = {
@@ -184,7 +184,7 @@ local config = {
             title = "𒅒 $playerName is warping...",
             description = "",
             color = "YELLOW",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnReset"] = {
             -- Available placeholders: $map, $mode
@@ -192,7 +192,7 @@ local config = {
             title = "🔄 The map has been reset!",
             description = "- **$map**\n- **$mode**",
             color = "YELLOW",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnLogin"] = {
             -- Available placeholders: $playerName, $playerID
@@ -200,7 +200,7 @@ local config = {
             title = "👤 $playerName has logged in!",
             description = "",
             color = "YELLOW",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnSnap"] = {
             -- Available placeholders: $playerName, $playerID
@@ -208,7 +208,7 @@ local config = {
             title = "⊹ $playerName snapped!",
             description = "",
             color = "YELLOW",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnCommand"] = {
             -- Available placeholders: $type, $name, $id, $command, $playerID
@@ -216,7 +216,7 @@ local config = {
             title = "⌘ Command executed!",
             description = "[**$type**] **$playerName** (**$id**): *$command*",
             color = "RED",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnChat"] = {
             -- Available placeholders: $type, $playerName, $id, $message, $playerID
@@ -224,7 +224,7 @@ local config = {
             title = "🗨️ Chat message sent!",
             description = "[**$type**] **$playerName** (**$id**): *$message*",
             color = "BLUE",
-            channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
         },
         ["OnScore"] = {
             [1] = {
@@ -233,7 +233,7 @@ local config = {
                 title = "🏆 CTF Scoreboard updated!",
                 description = "$playerName captured the flag for the **$playerTeam team**\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $playerTeam, $lapTime, $totalTeamLaps
             [2] = {
@@ -241,7 +241,7 @@ local config = {
                 title = "🏆 Team RACE Scoreboard updated!",
                 description = "$playerName completed a lap for the $playerTeam team\n- Lap Time: **$lapTime**\n- Total Laps: **$totalTeamLaps**",
                 color = "GREEN",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $lapTime, $playerScore
             [3] = {
@@ -249,7 +249,7 @@ local config = {
                 title = "🏆 FFA RACE Scoreboard updated!",
                 description = "$playerName completed a lap\n- Lap Time: **$lapTime**\n- Total Laps: **$playerScore**",
                 color = "GREEN",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $playerTeam, $redScore, $blueScore
             [4] = {
@@ -257,7 +257,7 @@ local config = {
                 title = "🏆 Team Slayer Scoreboard updated!",
                 description = "$playerName scored for the **$playerTeam team**\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             -- Available placeholders: $playerName, $redScore, $blueScore
             [5] = {
@@ -265,7 +265,7 @@ local config = {
                 title = "🏆 FFA Slayer Scoreboard updated!",
                 description = "$playerName scored\n- Red Team Score: **$redScore**\n- Blue Team Score: **$blueScore**",
                 color = "GREEN",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             }
         },
         ["OnDeath"] = {
@@ -276,7 +276,7 @@ local config = {
                 title = "☠️ $killerName drew first blood!",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [2] = {
                 -- killed from the grave
@@ -284,7 +284,7 @@ local config = {
                 title = "☠️ $victimName was killed from the grave by $killerName",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [3] = {
                 -- vehicle kill (includes being run over or killed by the vehicle's weapon)
@@ -294,7 +294,7 @@ local config = {
                 title = "☠️ $victimName was killed by $killerName",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [4] = {
                 -- pvp
@@ -302,7 +302,7 @@ local config = {
                 title = "☠️ $victimName was killed by $killerName",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [5] = {
                 -- guardians
@@ -310,7 +310,7 @@ local config = {
                 title = "☠️ $victimName was killed by the guardians",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [6] = {
                 -- suicide
@@ -318,7 +318,7 @@ local config = {
                 title = "☠️ $victimName committed suicide!",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [7] = {
                 -- betrayal
@@ -326,7 +326,7 @@ local config = {
                 title = "☠️ $victimName was betrayed by $killerName!",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [8] = {
                 -- squashed by a vehicle (when an unoccupied vehicle collides with you)
@@ -334,7 +334,7 @@ local config = {
                 title = "☠️ $victimName was squashed by a vehicle",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [9] = {
                 -- fall damage
@@ -342,7 +342,7 @@ local config = {
                 title = "☠️ $victimName fell and broke their leg",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [10] = {
                 -- killed by the server
@@ -350,7 +350,7 @@ local config = {
                 title = "☠️ $victimName was killed by the server",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             },
             [11] = {
                 -- unknown death
@@ -358,7 +358,7 @@ local config = {
                 title = "☠️ $victimName died",
                 description = "",
                 color = "RED",
-                channel = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                channel = "xxxxxxxxxxxxxxxxxxxxxxxxx"
             }
         }
     }
@@ -981,9 +981,7 @@ function OnDeath(victim, killer, metaID)
                 first_blood = false
                 eventType = 1
                 goto done
-            end
-
-            if not player_alive(killer) then
+            elseif not player_alive(killer) then
                 eventType = 2
                 goto done
             end
