@@ -1,5 +1,6 @@
 /* Copyright (c) 2024 Jericho Crosby <jericho.crosby227@gmail.com>. Licensed under GNU General Public License v3.0.
    See the LICENSE file or visit https://www.gnu.org/licenses/gpl-3.0.en.html for details. */
+
 package com.chalwk.CommandManager;
 
 import net.dv8tion.jda.api.entities.Guild;
@@ -9,8 +10,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A listener class for registering and handling commands in the Virtual Pets game project.
@@ -19,9 +21,9 @@ import java.util.List;
 public class CommandListener extends ListenerAdapter {
 
     /**
-     * A list of CommandInterface implementations representing available commands.
+     * A map of available commands for O(1) lookups based on command names.
      */
-    private final List<CommandInterface> commands = new ArrayList<>();
+    private final Map<String, CommandInterface> commands = new HashMap<>();
 
     /**
      * Registers all available commands in all guilds upon JDA's ready event.
@@ -31,8 +33,10 @@ public class CommandListener extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         for (Guild guild : event.getJDA().getGuilds()) {
-            for (CommandInterface command : commands) {
-                guild.upsertCommand(command.getName(), command.getDescription()).addOptions(command.getOptions()).queue();
+            for (CommandInterface command : commands.values()) {
+                guild.upsertCommand(command.getName(), command.getDescription())
+                        .addOptions(command.getOptions())
+                        .queue();
             }
         }
     }
@@ -44,15 +48,14 @@ public class CommandListener extends ListenerAdapter {
      */
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        for (CommandInterface command : commands) {
-            String cmd = event.getName();
-            if (cmd.equals(command.getName())) {
-                try {
-                    command.execute(event);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                return;
+        CommandInterface command = commands.get(event.getName());
+        if (command != null) {
+            try {
+                command.execute(event);
+            } catch (IOException e) {
+                event.reply("An error occurred while executing the command. Please try again later.").setEphemeral(true).queue();
+                // Log the error
+                System.err.println("Error executing command: " + e.getMessage());
             }
         }
     }
@@ -63,6 +66,6 @@ public class CommandListener extends ListenerAdapter {
      * @param command The CommandInterface instance representing the new command.
      */
     public void add(CommandInterface command) {
-        commands.add(command);
+        commands.put(command.getName(), command);
     }
 }

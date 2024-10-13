@@ -21,6 +21,9 @@ public class BotInitializer {
     // Authentication token for the bot.
     private final String token;
 
+    private static final String GAME_NAME = "Halo: PC";
+    private static final OnlineStatus STATUS = OnlineStatus.ONLINE;
+
     /**
      * Constructs a BotInitializer and retrieves the authentication token.
      *
@@ -36,19 +39,24 @@ public class BotInitializer {
      * @throws IOException If an I/O error occurs during initialization.
      */
     public void initializeBot() throws IOException {
+        try {
+            DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(this.token)
+                    .setStatus(STATUS)
+                    .setActivity(Activity.playing(GAME_NAME))
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS,
+                            GatewayIntent.GUILD_MESSAGES,
+                            GatewayIntent.GUILD_PRESENCES,
+                            GatewayIntent.MESSAGE_CONTENT);
 
-        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(this.token)
-                .setStatus(OnlineStatus.ONLINE)
-                .setActivity(Activity.playing("Halo: PC"))
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .enableIntents(GatewayIntent.GUILD_MEMBERS,
-                        GatewayIntent.GUILD_MESSAGES,
-                        GatewayIntent.GUILD_PRESENCES,
-                        GatewayIntent.MESSAGE_CONTENT);
-
-        shardManager = builder.build();
-        shardManager.addEventListener(new GuildReady());
-        registerCommands(shardManager);
+            shardManager = builder.build();
+            shardManager.addEventListener(new GuildReady());
+            registerCommands(shardManager);
+        } catch (Exception e) {
+            // Log or handle the exception as appropriate
+            System.err.println("Error initializing the bot: " + e.getMessage());
+            throw e; // Re-throw if necessary or handle it accordingly
+        }
     }
 
     /**
@@ -58,7 +66,7 @@ public class BotInitializer {
      */
     private void registerCommands(ShardManager shardManager) {
         CommandListener commands = new CommandListener();
-        commands.add(new channel());
+        commands.add(new channel()); // Ensure the command class name reflects its purpose
         shardManager.addEventListener(commands);
     }
 }

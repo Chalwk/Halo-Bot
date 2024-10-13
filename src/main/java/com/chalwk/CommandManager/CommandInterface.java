@@ -1,5 +1,6 @@
 /* Copyright (c) 2024 Jericho Crosby <jericho.crosby227@gmail.com>. Licensed under GNU General Public License v3.0.
    See the LICENSE file or visit https://www.gnu.org/licenses/gpl-3.0.en.html for details. */
+
 package com.chalwk.CommandManager;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -9,8 +10,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Sets up abstract methods for commands that will be used in the CommandManager class.
- * This interface defines the common methods required for any command implementation.
+ * This interface defines the structure for commands used in the Discord bot's CommandManager.
+ * It sets up abstract methods that any command implementation must define.
  */
 public interface CommandInterface {
     /**

@@ -25,12 +25,8 @@ public class FileIO {
      * @return The program's path as a String.
      */
     private static String getProgramPath() {
-        String currentDirectory = System.getProperty("user.dir");
-        currentDirectory = currentDirectory.replace("\\", "/");
-        if (currentDirectory.endsWith("/Halo-Bot")) {
-            return currentDirectory + "/";
-        }
-        return currentDirectory + "/Halo-Bot/";
+        String currentDirectory = System.getProperty("user.dir").replace("\\", "/");
+        return currentDirectory.endsWith("/Halo-Bot") ? currentDirectory : currentDirectory + "/Halo-Bot/";
     }
 
     /**
@@ -71,7 +67,7 @@ public class FileIO {
         try {
             Files.writeString(getFilePath(fileName), jsonObject.toString(4), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            Logger.info("Error saving JSONObject to file: " + e.getMessage());
+            Logger.info("Error saving JSONObject to file");
         }
     }
 
@@ -84,10 +80,6 @@ public class FileIO {
      */
     public static JSONObject getJSONObjectFromFile(String fileName) throws IOException {
         String content = readFile(fileName);
-        if (content.isEmpty()) {
-            return new JSONObject();
-        } else {
-            return new JSONObject(content);
-        }
+        return content.isEmpty() ? new JSONObject() : new JSONObject(content);
     }
 }

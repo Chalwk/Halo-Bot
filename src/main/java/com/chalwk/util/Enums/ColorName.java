@@ -4,46 +4,44 @@
 package com.chalwk.util.Enums;
 
 import java.awt.*;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
 public enum ColorName {
-    RED("RED", Color.RED),
-    BLUE("BLUE", Color.BLUE),
-    GREEN("GREEN", Color.GREEN),
-    YELLOW("YELLOW", Color.YELLOW),
-    ORANGE("ORANGE", Color.ORANGE),
-    CYAN("CYAN", Color.CYAN),
-    MAGENTA("MAGENTA", Color.MAGENTA),
-    PINK("PINK", Color.PINK),
-    WHITE("WHITE", Color.WHITE),
-    BLACK("BLACK", Color.BLACK),
-    GRAY("GRAY", Color.GRAY),
-    DARK_GRAY("DARK_GRAY", Color.DARK_GRAY),
-    LIGHT_GRAY("LIGHT_GRAY", Color.LIGHT_GRAY);
+    RED(Color.RED),
+    BLUE(Color.BLUE),
+    GREEN(Color.GREEN),
+    YELLOW(Color.YELLOW),
+    ORANGE(Color.ORANGE),
+    CYAN(Color.CYAN),
+    MAGENTA(Color.MAGENTA),
+    PINK(Color.PINK),
+    WHITE(Color.WHITE),
+    BLACK(Color.BLACK),
+    GRAY(Color.GRAY),
+    DARK_GRAY(Color.DARK_GRAY),
+    LIGHT_GRAY(Color.LIGHT_GRAY);
 
-    // A static map to store the mapping between color names and their corresponding ColorName enum values.
+    // A static map to store the mapping between color names and their corresponding NamedColor enum values.
     private static final Map<String, ColorName> colorMap = new HashMap<>();
 
-    // Static block to initialize the colorMap with color names as keys and ColorName enum values as values.
+    // Static block to initialize the colorMap with color names as keys and NamedColor enum values as values.
     static {
-        for (ColorName colorName : ColorName.values()) {
-            colorMap.put(colorName.name.toLowerCase(), colorName);
+        for (ColorName color : ColorName.values()) {
+            colorMap.put(color.name().toLowerCase(), color);
         }
     }
 
-    // Instance variables to store the name and Color object for each enum value.
-    private final String name;
+    // Instance variable to store the Color object for each enum value.
     private final Color color;
 
     /**
-     * Constructor to initialize the enum values with their corresponding name and Color object.
+     * Constructor to initialize the enum values with their corresponding Color object.
      *
-     * @param name  The name of the color.
      * @param color The `java.awt.Color` object representing the color.
      */
-    ColorName(String name, Color color) {
-        this.name = name;
+    ColorName(Color color) {
         this.color = color;
     }
 
@@ -55,8 +53,8 @@ public enum ColorName {
      * @return The `java.awt.Color` object corresponding to the given color name.
      */
     public static Color fromName(String name) {
-        ColorName colorName = colorMap.get(name.toLowerCase());
-        return colorName == null ? Color.GRAY : colorName.getColor();
+        ColorName namedColor = colorMap.get(name.toLowerCase());
+        return namedColor == null ? Color.GRAY : namedColor.getColor();
     }
 
     /**
