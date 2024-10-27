@@ -162,8 +162,6 @@ public class ServerMonitor {
         @Override
         public void run() {
 
-            // Record the start time of the task execution.
-            long startTime = System.currentTimeMillis();
             JSONObject servers;
             JSONObject messageIDs;
 
@@ -193,10 +191,6 @@ public class ServerMonitor {
             if (!updatedServers.isEmpty()) {
                 FileIO.saveJSONObjectToFile(servers, HALO_EVENTS_FILE);
             }
-
-            // Record the end time and print the execution duration.
-            long endTime = System.currentTimeMillis();
-            System.out.println("Execution time: " + (endTime - startTime) + "ms");
         }
     }
 }
